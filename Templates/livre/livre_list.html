@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Liste des livres</title></head>
+<body>
+<h1>Liste des livres</h1>
+<p><a href="{% url 'livre_create' %}">Ajouter un livre</a> | <a href="/api/livres/">API: /api/livres/</a></p>
+<ul>
+  {% for livre in livres %}
+    <li>
+      <a href="{% url 'livre_detail' livre.pk %}">{{ livre.titre }}</a> — {{ livre.auteur }}
+      (Quantité: {{ livre.quantite }})
+    </li>
+  {% empty %}
+    <li>Aucun livre.</li>
+  {% endfor %}
+</ul>
+</body>
+</html>

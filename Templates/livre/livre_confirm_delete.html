@@ -1,0 +1,12 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Confirmer suppression</title></head>
+<body>
+<h1>Supprimer {{ object.titre }}</h1>
+<form method="post">{% csrf_token %}
+  <p>Voulez-vous vraiment supprimer ce livre ?</p>
+  <button type="submit">Oui, supprimer</button>
+  <a href="{% url 'livre_detail' object.pk %}">Annuler</a>
+</form>
+</body>
+</html>
