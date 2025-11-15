@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="cart-delete-section py-5">
+    <div class="container d-flex justify-content-center">
+        <div class="card delete-card p-4 shadow-sm text-center" style="max-width: 500px; width: 100%;">
+
+            <h2 class="mb-4 text-danger">Supprimer un élément</h2>
+
+            <p class="mb-4">
+                Voulez-vous vraiment supprimer 
+                <strong>{{ object.titre }}</strong> 
+                du panier ?
+            </p>
+
+            <form method="POST" class="d-flex justify-content-center gap-2">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Confirmer</button>
+                <a href="{% url 'panier_list' %}" class="btn btn-secondary">Annuler</a>
+                <a href="{% url 'index' %}" class="btn btn-primary">Accueil</a>
+            </form>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}
