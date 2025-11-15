@@ -3,6 +3,10 @@ from django.db import models
 
 # Create your models here.
 
+from django.db import models
+from django.utils.html import format_html
+
+
 class Livre(models.Model):
     titre = models.CharField(max_length=200)
     auteur = models.CharField(max_length=200)
@@ -16,9 +20,23 @@ class Livre(models.Model):
     date_ajout = models.DateTimeField(auto_now_add=True)
     date_modif = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        ordering = ['-date_ajout']
-        unique_together = (('titre', 'auteur', 'isbn'),)  # isbn unique, sinon combination allowed
+    # Affichage image dans l'admin
+    def image_tag(self):
+        if self.image:
+            return format_html('<img src="{}" width="60" height="80" style="object-fit: cover; border-radius:4px;" />', self.image.url)
+        return "—"
+    image_tag.short_description = "Aperçu"
 
     def __str__(self):
         return f"{self.titre} — {self.auteur}"
+
+    class Meta:
+        ordering = ['-date_ajout']
+        verbose_name = "Livre"
+        verbose_name_plural = "Livres"
+        constraints = [
+            models.UniqueConstraint(
+                fields=['titre', 'auteur', 'isbn'],
+                name='unique_livre_combinaison'
+            )
+        ]
