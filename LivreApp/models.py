@@ -1,3 +1,4 @@
+import base64
 from django.db import models
 
 
@@ -13,19 +14,23 @@ class Livre(models.Model):
     isbn = models.CharField(max_length=13, unique=True, blank=True, null=True)
     date_publication = models.DateField(blank=True, null=True)
     quantite = models.PositiveIntegerField(default=1)
-    image = models.ImageField(upload_to='livres/', blank=True, null=True)
+    image_blob = models.BinaryField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     prix = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
     disponible = models.BooleanField(default=True)
     date_ajout = models.DateTimeField(auto_now_add=True)
     date_modif = models.DateTimeField(auto_now=True)
 
-    # Affichage image dans l'admin
     def image_tag(self):
-        if self.image:
-            return format_html('<img src="{}" width="60" height="80" style="object-fit: cover; border-radius:4px;" />', self.image.url)
+        if self.image_blob:
+            b64 = base64.b64encode(self.image_blob).decode()
+            return format_html(
+                '<img src="data:image/jpeg;base64,{}" width="60" height="80" style="object-fit: cover; border-radius:4px;" />',
+                b64
+            )
         return "—"
     image_tag.short_description = "Aperçu"
+
 
     def __str__(self):
         return f"{self.titre} — {self.auteur}"
