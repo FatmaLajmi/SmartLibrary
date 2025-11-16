@@ -19,6 +19,7 @@ from django.urls import path , include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('avis/', include('AvisApp.urls', namespace='AvisApp')),
-    path('accounts/', include('django.contrib.auth.urls')),
+     path('avis/', include('AvisApp.urls')),         # frontend MVT
+    path('api/avis/', include('AvisAppApi.urls')),
+   
 ]

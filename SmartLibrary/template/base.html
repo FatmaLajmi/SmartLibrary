@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>SmartLibrary - Avis</title>
+</head>
+<body>
+  <nav>
+    <a href="{% url 'avis_list' %}">Tous les avis</a> |
+    <a href="{% url 'ajouter_avis' %}">Ajouter un avis</a> |
+    <a href="{% url 'mes_avis' %}?author=Eya">Mes avis (simu 'Eya')</a>
+  </nav>
+  <hr>
+  {% if messages %}
+    <ul>
+      {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+  {% block content %}{% endblock %}
+</body>
+</html>

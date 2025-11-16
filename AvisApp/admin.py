@@ -1,13 +1,8 @@
 from django.contrib import admin
-
-from .models import Book, Avis
-
-@admin.register(Book)
-class BookAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'author')
+from .models import Avis
 
 @admin.register(Avis)
 class AvisAdmin(admin.ModelAdmin):
-    list_display = ('idAvis', 'book', 'user', 'note', 'date')
-    list_filter = ('note', 'date')
-    search_fields = ('commentaire', 'book__title', 'user__username')
+    list_display = ('id', 'book_title', 'author', 'note', 'date')
+    list_filter = ('date', 'note', 'book_title')
+    search_fields = ('author', 'book_title', 'commentaire')

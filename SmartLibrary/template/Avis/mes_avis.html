@@ -1,34 +1,73 @@
-{% extends "Avis/base.html" %}
+{% extends 'base.html' %}
+
 {% block content %}
-  <h2>Mes avis</h2>
-  <p>
-    Trier:
-    <a href="?sort=date_desc">Date ↓</a> |
-    <a href="?sort=date_asc">Date ↑</a> |
-    <a href="?sort=note_desc">Note ↓</a> |
-    <a href="?sort=note_asc">Note ↑</a>
-  </p>
+<h1>Mes Avis</h1>
 
-  <ul>
-    {% for avis in avis_page %}
-      <li>
-        <strong>{{ avis.book.title }}</strong> — {{ avis.note }}/5 — {{ avis.date|date:"d/m/Y H:i" }} <br>
-        {{ avis.commentaire|truncatechars:200 }}
-        — <a href="{% url 'AvisApp:modifier_avis' avis.pk %}">modifier</a>
-        — <a href="{% url 'AvisApp:supprimer_avis' avis.pk %}">supprimer</a>
-      </li>
-    {% empty %}
-      <li>Tu n'as encore fait aucun avis.</li>
-    {% endfor %}
-  </ul>
+{% comment %}
+--------------------------------------------------------
+SI PAS DE PARAM author DANS L'URL → AFFICHER MESSAGE
+Ex: /avis/mes/?author=Eya
+--------------------------------------------------------
+{% endcomment %}
 
-  <div>
-    {% if avis_page.has_previous %}
-      <a href="?page={{ avis_page.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">Prev</a>
+{% if not request.GET.author %}
+    <p style="color:red;">
+        ⚠ Aucun utilisateur sélectionné.  
+        Veuillez préciser votre nom dans l’URL :
+    </p>
+
+    <p>
+        Exemple :  
+        <a href="?author=Eya">Voir mes avis (Eya)</a>
+    </p>
+
+{% else %}
+
+    <h3>Avis de <strong>{{ request.GET.author }}</strong></h3>
+
+    {% if mes_avis %}
+        <ul>
+            {% for avis in mes_avis %}
+                <li>
+                    <strong>{{ avis.book_title }}</strong>
+                    — {{ avis.note }}/5  
+                    — {{ avis.date }}  
+                    <br>
+                    {{ avis.commentaire }}
+                    <br>
+                    <a href="{% url 'detail_avis' avis.pk %}">voir</a> |
+                    <a href="{% url 'modifier_avis' avis.pk %}">modifier</a> |
+                    <a href="{% url 'supprimer_avis' avis.pk %}">supprimer</a>
+                </li>
+                <hr>
+            {% endfor %}
+        </ul>
+
+        {% comment %}
+        -----------------------
+        PAGINATION
+        -----------------------
+        {% endcomment %}
+        <div>
+            {% if is_paginated %}
+                <div>
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}&author={{ request.GET.author }}">Précédent</a>
+                    {% endif %}
+
+                    Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}&author={{ request.GET.author }}">Suivant</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+    {% else %}
+        <p>Aucun avis trouvé pour <strong>{{ request.GET.author }}</strong>.</p>
     {% endif %}
-    {{ avis_page.number }} / {{ avis_page.paginator.num_pages }}
-    {% if avis_page.has_next %}
-      <a href="?page={{ avis_page.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">Next</a>
-    {% endif %}
-  </div>
+
+{% endif %}
+
 {% endblock %}

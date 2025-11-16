@@ -1,13 +1,14 @@
 from django.urls import path
-from . import views
-
-app_name = 'AvisApp'
+from .views import (
+    AvisListView, AvisCreateView, AvisUpdateView, AvisDeleteView,
+    AvisDetailView, MesAvisView
+)
 
 urlpatterns = [
-    path('books/', views.book_list, name='book_list'),
-    path('book/<int:book_id>/avis/', views.book_avis_list, name='book_avis_list'),
-    path('book/<int:book_id>/avis/ajouter/', views.ajouter_avis, name='ajouter_avis'),
-    path('avis/<int:pk>/modifier/', views.modifier_avis, name='modifier_avis'),
-    path('avis/<int:pk>/supprimer/', views.supprimer_avis, name='supprimer_avis'),
-    path('mes-avis/', views.mes_avis, name='mes_avis'),
+    path('', AvisListView.as_view(), name='avis_list'),
+    path('ajouter/', AvisCreateView.as_view(), name='ajouter_avis'),
+    path('modifier/<int:pk>/', AvisUpdateView.as_view(), name='modifier_avis'),
+    path('supprimer/<int:pk>/', AvisDeleteView.as_view(), name='supprimer_avis'),
+    path('detail/<int:pk>/', AvisDetailView.as_view(), name='detail_avis'),
+    path('mes/', MesAvisView.as_view(), name='mes_avis'),
 ]
