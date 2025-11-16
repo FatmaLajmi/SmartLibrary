@@ -1,0 +1,34 @@
+{% extends "Avis/base.html" %}
+{% block content %}
+  <h2>Mes avis</h2>
+  <p>
+    Trier:
+    <a href="?sort=date_desc">Date ↓</a> |
+    <a href="?sort=date_asc">Date ↑</a> |
+    <a href="?sort=note_desc">Note ↓</a> |
+    <a href="?sort=note_asc">Note ↑</a>
+  </p>
+
+  <ul>
+    {% for avis in avis_page %}
+      <li>
+        <strong>{{ avis.book.title }}</strong> — {{ avis.note }}/5 — {{ avis.date|date:"d/m/Y H:i" }} <br>
+        {{ avis.commentaire|truncatechars:200 }}
+        — <a href="{% url 'AvisApp:modifier_avis' avis.pk %}">modifier</a>
+        — <a href="{% url 'AvisApp:supprimer_avis' avis.pk %}">supprimer</a>
+      </li>
+    {% empty %}
+      <li>Tu n'as encore fait aucun avis.</li>
+    {% endfor %}
+  </ul>
+
+  <div>
+    {% if avis_page.has_previous %}
+      <a href="?page={{ avis_page.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">Prev</a>
+    {% endif %}
+    {{ avis_page.number }} / {{ avis_page.paginator.num_pages }}
+    {% if avis_page.has_next %}
+      <a href="?page={{ avis_page.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">Next</a>
+    {% endif %}
+  </div>
+{% endblock %}

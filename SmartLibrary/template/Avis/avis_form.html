@@ -1,0 +1,22 @@
+{% extends "Avis/base.html" %}
+{% block content %}
+  <h2>{{ action }} un avis pour "{{ book.title }}"</h2>
+  <form method="post">
+    {% csrf_token %}
+
+    <!-- 🔹 champ book grisé -->
+    <p>
+      {{ form.book.label_tag }} {{ form.book }}
+    </p>
+
+    <!-- 🔹 champ caché pour que le book soit transmis -->
+    <input type="hidden" name="book" value="{{ book.id }}">
+
+    <!-- 🔹 les autres champs -->
+    {{ form.note.label_tag }} {{ form.note }}<br>
+    {{ form.commentaire.label_tag }} {{ form.commentaire }}
+
+    <br><button type="submit">{{ action }}</button>
+    <a href="{% url 'AvisApp:book_avis_list' book.id %}">Annuler</a>
+  </form>
+{% endblock %}

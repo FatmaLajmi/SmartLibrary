@@ -1,0 +1,43 @@
+{% extends "Avis/base.html" %}
+{% block title %}Avis du livre{% endblock %}
+{% block content %}
+  <h2>Avis sur "{{ book.title }}"</h2>
+  <p>
+    Trier:
+    <a href="?sort=date_desc">Date ↓</a> |
+    <a href="?sort=date_asc">Date ↑</a> |
+    <a href="?sort=note_desc">Note ↓</a> |
+    <a href="?sort=note_asc">Note ↑</a>
+  </p>
+  {% if user.is_authenticated %}
+    <p><a href="{% url 'AvisApp:ajouter_avis' book.id %}">Ajouter un avis</a></p>
+  {% else %}
+    <p>Connecte-toi pour ajouter un avis.</p>
+  {% endif %}
+  <ul>
+    {% for avis in avis_page %}
+      <li>
+        <strong>{{ avis.note }}/5</strong>
+        — {{ avis.commentaire|linebreaksbr }} <br>
+        <em>par {{ avis.user.username }} le {{ avis.date|date:"d/m/Y H:i" }}</em>
+        {% if user == avis.user %}
+          — <a href="{% url 'AvisApp:modifier_avis' avis.pk %}">modifier</a>
+          — <a href="{% url 'AvisApp:supprimer_avis' avis.pk %}">supprimer</a>
+        {% endif %}
+      </li>
+    {% empty %}
+      <li>Aucun avis pour ce livre.</li>
+    {% endfor %}
+  </ul>
+
+  <div>
+    Page: 
+    {% if avis_page.has_previous %}
+      <a href="?page={{ avis_page.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">Prev</a>
+    {% endif %}
+    {{ avis_page.number }} / {{ avis_page.paginator.num_pages }}
+    {% if avis_page.has_next %}
+      <a href="?page={{ avis_page.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">Next</a>
+    {% endif %}
+  </div>
+{% endblock %}
