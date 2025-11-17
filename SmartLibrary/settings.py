@@ -54,7 +54,7 @@ ROOT_URLCONF = 'SmartLibrary.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'SmartLibrary' / 'templates'],
+        'DIRS': [BASE_DIR / 'SmartLibrary' / 'template'],
   # dossier templates global
         'APP_DIRS': True,
         'OPTIONS': {

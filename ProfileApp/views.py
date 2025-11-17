@@ -13,7 +13,7 @@ def profile_view(request):
         # Si pas de profil, redirige vers la page de création
         return redirect('profile_create')
 
-    return render(request, 'profile_view.html', {'profile': profile})
+    return render(request, 'profile/profile_view.html', {'profile': profile})
 
 
 @login_required
@@ -35,8 +35,7 @@ def profile_create(request):
     else:
         form = ProfileForm()
 
-    return render(request, 'profile_create.html', {'form': form})
-    return render(request, 'profile_view.html', {'profile': profile})
+    return render(request, 'profile/profile_create.html', {'form': form})
 
 
 @login_required
@@ -56,4 +55,4 @@ def profile_edit(request):
         profile_form = ProfileForm(instance=profile)
 
     context = {'user_form': user_form, 'profile_form': profile_form}
-    return render(request, 'profile_edit.html', context)
+    return render(request, 'profile/profile_edit.html', context)
