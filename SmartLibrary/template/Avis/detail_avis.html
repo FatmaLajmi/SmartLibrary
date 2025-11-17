@@ -1,0 +1,10 @@
+{% extends 'Avis/base.html' %}
+{% block content %}
+<h1>Détail avis</h1>
+<p>Livre : {{ avis.book_title }}</p>
+<p>Auteur : {{ avis.author }}</p>
+<p>Note : {{ avis.note }}</p>
+<p>Commentaire : {{ avis.commentaire }}</p>
+<p>Date : {{ avis.date }}</p>
+<a href="{% url 'modifier_avis' avis.pk %}">Modifier</a>
+{% endblock %}

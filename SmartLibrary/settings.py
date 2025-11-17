@@ -23,11 +23,24 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'UserApp',       # 🔹 ajoute cette ligne
+    'rest_framework',
+    'LivreApp',
+    'LivreAppApi',
+    'AvisApp',
+    'AvisAppApi',
+    'PanierApp',
+    'PanierAppApi',
+    'UserApp',       
     'ProfileApp'
-    # Nos apps
-    
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5,
+    'DEFAULT_FILTER_BACKENDS': [
+        'rest_framework.filters.OrderingFilter',
+        'rest_framework.filters.SearchFilter',
+    ],
+}
 
 
 # ----------------------------
@@ -54,8 +67,7 @@ ROOT_URLCONF = 'SmartLibrary.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'SmartLibrary' / 'template'],
-  # dossier templates global
+        'DIRS': [BASE_DIR/'SmartLibrary/template'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -111,6 +123,14 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # dossier collectstatic
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.2/howto/static-files/
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 # ----------------------------
 #   MEDIA FILES
@@ -128,5 +148,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ----------------------------
 AUTH_USER_MODEL = 'UserApp.Utilisateur'
 # Redirection après login
-LOGIN_REDIRECT_URL = '/profile/'  # 🔹 redirige vers ta page profile
-LOGOUT_REDIRECT_URL = '/accounts/login/'  # 🔹 redirige vers login après logout
+LOGIN_REDIRECT_URL = '/profile/' 
+LOGOUT_REDIRECT_URL = '/accounts/login/' 
+
+
+import os
+from pathlib import Path
+
+# BASE_DIR est déjà défini comme ceci dans Django 5+ :
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Fichiers médias
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
