@@ -37,9 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'LivreApp',
+    'LivreAppApi',
     'AvisApp',
     'AvisAppApi',
-    'rest_framework',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -65,7 +67,7 @@ ROOT_URLCONF = 'SmartLibrary.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'SmartLibrary/template'],
+        'DIRS': [BASE_DIR/'SmartLibrary/template'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -133,3 +135,14 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/avis/mes-avis/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+
+import os
+from pathlib import Path
+
+# BASE_DIR est déjà défini comme ceci dans Django 5+ :
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Fichiers médias
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
