@@ -1,21 +1,25 @@
-<!doctype html>
-<html>
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <title>SmartLibrary - Avis</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Ma Librairie{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-YSZK6X8nlPZ1sPqjLF0sH5a8K9bXJwq6QZqFd4eF4N59p6DlfM0z9E8TF1lCJK5G"
+          crossorigin="anonymous">
+
+    <!-- CSS personnalisé -->
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/plugins.css' %}">
+
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-  <nav>
-    <a href="{% url 'avis_list' %}">Tous les avis</a> |
-    <a href="{% url 'ajouter_avis' %}">Ajouter un avis</a> |
-    <a href="{% url 'mes_avis' %}?author=Eya">Mes avis (simu 'Eya')</a>
-  </nav>
-  <hr>
-  {% if messages %}
-    <ul>
-      {% for m in messages %}<li>{{ m }}</li>{% endfor %}
-    </ul>
-  {% endif %}
-  {% block content %}{% endblock %}
-</body>
-</html>
+
+<!-- Contenu principal -->
+<main>
+    {% block content %}{% endblock %}
+</main>
