@@ -38,9 +38,21 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'LivreApp',
+    'LivreAppApi',
+    'AvisApp',
+    'AvisAppApi',
     'PanierApp',
     'PanierAppApi',
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5,
+    'DEFAULT_FILTER_BACKENDS': [
+        'rest_framework.filters.OrderingFilter',
+        'rest_framework.filters.SearchFilter',
+    ],
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -57,7 +69,7 @@ ROOT_URLCONF = 'SmartLibrary.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'SmartLibrary/template'],
+        'DIRS': [BASE_DIR/'SmartLibrary/template'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -127,3 +139,16 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGIN_REDIRECT_URL = '/avis/mes-avis/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+
+import os
+from pathlib import Path
+
+# BASE_DIR est déjà défini comme ceci dans Django 5+ :
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Fichiers médias
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
