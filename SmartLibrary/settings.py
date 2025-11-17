@@ -40,7 +40,17 @@ INSTALLED_APPS = [
     'rest_framework',
     'LivreApp',
     'LivreAppApi',
+    'AvisApp',
+    'AvisAppApi',
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5,
+    'DEFAULT_FILTER_BACKENDS': [
+        'rest_framework.filters.OrderingFilter',
+        'rest_framework.filters.SearchFilter',
+    ],
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -123,6 +133,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGIN_REDIRECT_URL = '/avis/mes-avis/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+
 
 import os
 from pathlib import Path

@@ -24,6 +24,9 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('LivreAppApi.urls')),  # ton API
+    path('avis/', include('AvisApp.urls')),         # frontend MVT
+    path('api/avis/', include('AvisAppApi.urls')),
 ]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
