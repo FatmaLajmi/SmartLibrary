@@ -41,24 +41,52 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="right-element">
-                            <a href="#" class="user-account for-buy"><i class="icon icon-user"></i><span>Account</span></a>
-                            <a href="{% url 'panier_list' %}" class="cart for-buy"><i class="icon icon-clipboard"></i><span>Cart:(0 $)</span></a>
+                   <div class="col-md-6">
+    <div class="right-element">
+        <!-- Menu Account avec dropdown -->
+        <div class="dropdown d-inline-block">
+            {% if user.is_authenticated %}
+                <a href="#" class="user-account for-buy dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="icon icon-user"></i>
+                    <span>Account</span>
+                </a>
+                <ul class="dropdown-menu">
+                    {% if user.profile %}
+                        <li><a class="dropdown-item" href="{% url 'profile_view' %}">Mon Profil</a></li>
+                        <li><a class="dropdown-item" href="{% url 'profile_edit' %}">Modifier le Profil</a></li>
+                    {% else %}
+                        <li><a class="dropdown-item" href="{% url 'profile_create' %}">Créer mon Profil</a></li>
+                    {% endif %}
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">Déconnexion</a></li>
+                </ul>
+            {% else %}
+                <a href="{% url 'login' %}" class="user-account for-buy">
+                    <i class="icon icon-user"></i>
+                    <span>Login</span>
+                </a>
+            {% endif %}
+        </div>
 
-                            <div class="action-menu">
-                                <div class="search-bar">
-                                    <a href="#" class="search-button search-toggle" data-selector="#header-wrap">
-                                        <i class="icon icon-search"></i>
-                                    </a>
-                                    <form role="search" method="get" class="search-box">
-                                        <input class="search-field text search-input" placeholder="Search" type="search">
-                                    </form>
-                                </div>
-                            </div>
+        <!-- Cart -->
+        <a href="{% url 'panier_list' %}" class="cart for-buy">
+            <i class="icon icon-clipboard"></i>
+            <span>Cart:(0 $)</span>
+        </a>
 
-                        </div>
-                    </div>
+        <!-- Search -->
+        <div class="action-menu">
+            <div class="search-bar">
+                <a href="#" class="search-button search-toggle" data-selector="#header-wrap">
+                    <i class="icon icon-search"></i>
+                </a>
+                <form role="search" method="get" class="search-box">
+                    <input class="search-field text search-input" placeholder="Search" type="search">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
                 </div>
             </div>

@@ -1,15 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Create Profile</title>
-</head>
-<body>
-    <h1>Create Your Profile</h1>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Create Profile</button>
-    </form>
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Créer mon profil - Ma Librairie{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+
+            <div class="glass-card shadow-lg">
+
+                <!-- HEADER -->
+                <div class="p-4 border-bottom">
+                    <h2 class="fw-bold text-primary m-0">
+                        <i class="bi bi-person-plus-fill me-2"></i>Créer votre profil
+                    </h2>
+                </div>
+
+                <div class="p-4">
+
+                    <p class="text-muted">Remplissez les champs ci-dessous pour créer votre profil.</p>
+
+                    <form method="POST" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+
+                        {% if form.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <strong>Erreur :</strong> Certains champs sont incorrects.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endif %}
+
+                        <div class="form-section">
+                            <div class="form-block">
+                                {{ form.as_p }}
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill mt-4 shadow-lg">
+                            <i class="bi bi-check-circle me-2"></i>Créer le profil
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+
+.glass-card {
+    background: rgba(255,255,255,0.85);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    transition: 0.3s;
+}
+.glass-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Section */
+.form-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #dfdfdf;
+    animation: fadeIn .5s ease;
+}
+.form-block p { margin-bottom: 1.4rem; }
+
+/* Inputs */
+input, textarea, select {
+    border-radius: 8px !important;
+    padding: 10px !important;
+}
+input:focus, textarea:focus, select:focus {
+    border-color: #c5d300 !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+}
+
+/* Button */
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(13,110,253,0.45);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+</style>
+{% endblock %}
