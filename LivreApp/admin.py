@@ -7,13 +7,13 @@ from .forms import LivreForm
 class LivreAdmin(admin.ModelAdmin):
     form = LivreForm
 
-    list_display = ('image_tag', 'title', 'author', 'isbn', 'quantity', 'available', 'date_added')
+    list_display = ('image_tag', 'title', 'author', 'isbn', 'genre', 'quantity', 'available', 'date_added')
     list_display_links = ('image_tag', 'title')
     
     # Admin form
     fieldsets = (
         ("Main Information", {
-            'fields': ('title', 'author', 'isbn', 'description', 'image_upload')  # image → image_upload
+            'fields': ('title', 'author', 'isbn', 'genre', 'description', 'image_upload')  # ← Ajouter genre ici
         }),
         ("Additional Details", {
             'fields': ('publication_date', 'price', 'quantity', 'available')

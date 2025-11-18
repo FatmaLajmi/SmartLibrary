@@ -1,4 +1,5 @@
 {% load static %}
+{% load livre_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -88,7 +89,7 @@
                                             <li><a href="{% url 'index' %}">Styles</a></li>
                                             <li><a href="{% url 'index' %}">Blog</a></li>
                                             <li><a href="{% url 'index' %}">Post Single</a></li>
-                                            <li><a href="{% url 'index' %}">Our Store</a></li>
+                                            <li><a href="{% url 'all_books' %}">Our Store</a></li>
                                             <li><a href="{% url 'index' %}">Product Single</a></li>
                                             <li><a href="{% url 'index' %}">Contact</a></li>
                                             <li><a href="{% url 'index' %}">Thank You</a></li>
@@ -119,49 +120,69 @@
     </div><!-- header-wrap -->
 
     <section id="billboard">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
 
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
+                <button class="prev slick-arrow">
+                    <i class="icon icon-arrow-left"></i>
+                </button>
 
-                    <button class="prev slick-arrow">
-                        <i class="icon icon-arrow-left"></i>
-                    </button>
+                <div class="main-slider pattern-overlay">
+                    {% for book in featured_books|slice:":3" %}
+                    <div class="slider-item">
+                        <div class="banner-content">
+                            <h2 class="banner-title">{{ book.title }}</h2>
+                            <p>
+                                {% if book.description %}
+                                    {{ book.description|truncatewords:30 }}
+                                {% else %}
+                                    Discover this amazing book by {{ book.author }}. A must-read addition to your collection!
+                                {% endif %}
+                            </p>
+                            <div class="btn-wrap">
+                                <a href="{% url 'all_books' %}" class="btn btn-outline-accent btn-accent-arrow">
+                                    Shop Now <i class="icon icon-ns-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div><!-- banner-content -->
+                        
+                        {% if book.image_blob %}
+                            <img src="data:image/jpeg;base64,{{ book.image_blob|b64encode }}" 
+                                 alt="{{ book.title }}" 
+                                 class="banner-image"
+                                 style="object-fit: cover;">
+                        {% else %}
+                            <img src="{% static 'images/main-banner1.jpg' %}" 
+                                 alt="{{ book.title }}" 
+                                 class="banner-image">
+                        {% endif %}
+                    </div><!-- slider-item -->
+                    {% empty %}
+                    <!-- Fallback if no books -->
+                    <div class="slider-item">
+                        <div class="banner-content">
+                            <h2 class="banner-title">Welcome to BookSaw</h2>
+                            <p>Discover amazing books and expand your reading horizons. Browse our collection of quality books across all genres.</p>
+                            <div class="btn-wrap">
+                                <a href="{% url 'all_books' %}" class="btn btn-outline-accent btn-accent-arrow">
+                                    Browse Books <i class="icon icon-ns-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <img src="{% static 'images/main-banner1.jpg' %}" alt="banner" class="banner-image">
+                    </div>
+                    {% endfor %}
+                </div><!-- slider -->
 
-                    <div class="main-slider pattern-overlay">
-                        <div class="slider-item">
-                            <div class="banner-content">
-                                <h2 class="banner-title">Life of the Wild</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero ipsum enim pharetra hac. Urna commodo, lacus ut magna velit eleifend. Amet, quis urna, a eu.</p>
-                                <div class="btn-wrap">
-                                    <a href="#" class="btn btn-outline-accent btn-accent-arrow">Read More<i class="icon icon-ns-arrow-right"></i></a>
-                                </div>
-                            </div><!-- banner-content -->
-                            <img src="{% static 'images/main-banner1.jpg' %}" alt="banner" class="banner-image">
-                        </div><!-- slider-item -->
+                <button class="next slick-arrow">
+                    <i class="icon icon-arrow-right"></i>
+                </button>
 
-                        <div class="slider-item">
-                            <div class="banner-content">
-                                <h2 class="banner-title">Birds gonna be Happy</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero ipsum enim pharetra hac. Urna commodo, lacus ut magna velit eleifend. Amet, quis urna, a eu.</p>
-                                <div class="btn-wrap">
-                                    <a href="#" class="btn btn-outline-accent btn-accent-arrow">Read More<i class="icon icon-ns-arrow-right"></i></a>
-                                </div>
-                            </div><!-- banner-content -->
-                            <img src="{% static 'images/main-banner2.jpg' %}" alt="banner" class="banner-image">
-                        </div><!-- slider-item -->
-
-                    </div><!-- slider -->
-
-                    <button class="next slick-arrow">
-                        <i class="icon icon-arrow-right"></i>
-                    </button>
-
-                </div>
             </div>
         </div>
-
-    </section>
+    </div>
+</section>
 
 
 	<section id="client-holder" data-aos="fade-up">
@@ -182,6 +203,7 @@
     </div>
 </section>
 
+<!-- FEATURED BOOKS SECTION - DYNAMIC -->
 <section id="featured-books" class="py-5 my-5">
     <div class="container">
         <div class="row">
@@ -196,73 +218,40 @@
 
                 <div class="product-list" data-aos="fade-up">
                     <div class="row">
-
+                        {% for book in featured_books %}
                         <div class="col-md-3">
                             <div class="product-item">
                                 <figure class="product-style">
-                                    <img src="{% static 'images/product-item1.jpg' %}" alt="Books" class="product-item">
+                                    {% if book.image_blob %}
+                                        <img src="data:image/jpeg;base64,{{ book.image_blob|b64encode }}" alt="{{ book.title }}" class="product-item">
+                                    {% else %}
+                                        <img src="{% static 'images/product-item1.jpg' %}" alt="{{ book.title }}" class="product-item">
+                                    {% endif %}
                                     <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
                                 </figure>
                                 <figcaption>
-                                    <h3>Simple way of piece life</h3>
-                                    <span>Armor Ramsey</span>
-                                    <div class="item-price">$ 40.00</div>
+                                    <h3>{{ book.title|truncatewords:5 }}</h3>
+                                    <span>{{ book.author }}</span>
+                                    <div class="item-price">${{ book.price|floatformat:2 }}</div>
                                 </figcaption>
                             </div>
                         </div>
-
-                        <div class="col-md-3">
-                            <div class="product-item">
-                                <figure class="product-style">
-                                    <img src="{% static 'images/product-item2.jpg' %}" alt="Books" class="product-item">
-                                    <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
-                                </figure>
-                                <figcaption>
-                                    <h3>Great travel at desert</h3>
-                                    <span>Sanchit Howdy</span>
-                                    <div class="item-price">$ 38.00</div>
-                                </figcaption>
-                            </div>
+                        {% empty %}
+                        <div class="col-md-12">
+                            <p class="text-center">No books available at the moment.</p>
                         </div>
+                        {% endfor %}
 
-                        <div class="col-md-3">
-                            <div class="product-item">
-                                <figure class="product-style">
-                                    <img src="{% static 'images/product-item3.jpg' %}" alt="Books" class="product-item">
-                                    <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
-                                </figure>
-                                <figcaption>
-                                    <h3>The lady beauty Scarlett</h3>
-                                    <span>Arthur Doyle</span>
-                                    <div class="item-price">$ 45.00</div>
-                                </figcaption>
-                            </div>
-                        </div>
+                    </div><!--row-->
+                </div><!--product-list-->
 
-                        <div class="col-md-3">
-                            <div class="product-item">
-                                <figure class="product-style">
-                                    <img src="{% static 'images/product-item4.jpg' %}" alt="Books" class="product-item">
-                                    <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
-                                </figure>
-                                <figcaption>
-                                    <h3>Once upon a time</h3>
-                                    <span>Klien Marry</span>
-                                    <div class="item-price">$ 35.00</div>
-                                </figcaption>
-                            </div>
-                        </div>
-
-                    </div><!--ft-books-slider-->
-                </div><!--grid-->
-
-            </div><!--inner-content-->
+            </div><!--col-->
         </div>
 
         <div class="row">
             <div class="col-md-12">
                 <div class="btn-wrap align-right">
-                    <a href="#" class="btn-accent-arrow">View all products <i class="icon icon-ns-arrow-right"></i></a>
+                    <a href="{% url 'all_books' %}" class="btn-accent-arrow">View all products <i class="icon icon-ns-arrow-right"></i></a>
                 </div>
             </div>
         </div>
@@ -312,432 +301,143 @@
 </section>
 
 
-	<section id="popular-books" class="bookshelf py-5 my-5">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12">
+<!-- POPULAR BOOKS BY GENRE SECTION - DYNAMIC -->
+<section id="popular-books" class="bookshelf py-5 my-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
 
-					<div class="section-header align-center">
-						<div class="title">
-							<span>Some quality items</span>
-						</div>
-						<h2 class="section-title">Popular Books</h2>
-					</div>
+                <div class="section-header align-center">
+                    <div class="title">
+                        <span>Some quality items</span>
+                    </div>
+                    <h2 class="section-title">Popular Books</h2>
+                </div>
 
-					<ul class="tabs">
-						<li data-tab-target="#all-genre" class="active tab">All Genre</li>
-						<li data-tab-target="#business" class="tab">Business</li>
-						<li data-tab-target="#technology" class="tab">Technology</li>
-						<li data-tab-target="#romantic" class="tab">Romantic</li>
-						<li data-tab-target="#adventure" class="tab">Adventure</li>
-						<li data-tab-target="#fictional" class="tab">Fictional</li>
-					</ul>
+                <ul class="tabs">
+                    <li data-tab-target="#all-genre" class="active tab">All Genre</li>
+                    {% for genre_key, genre_data in books_by_genre.items %}
+                    <li data-tab-target="#{{ genre_key }}" class="tab">{{ genre_data.name }}</li>
+                    {% endfor %}
+                </ul>
 
-					<div class="tab-content">
-						<div id="all-genre" data-tab-content class="active">
-							<div class="row">
+                <div class="tab-content">
+                    <!-- ALL GENRE TAB -->
+                    <div id="all-genre" data-tab-content class="active">
+                        {% if featured_books %}
+                        <div class="row">
+                            {% for book in featured_books|slice:":4" %}
+                            <div class="col-md-3">
+                                <div class="product-item">
+                                    <figure class="product-style">
+                                        {% if book.image_blob %}
+                                            <img src="data:image/jpeg;base64,{{ book.image_blob|b64encode }}" alt="{{ book.title }}" class="product-item">
+                                        {% else %}
+                                            <img src="{% static 'images/tab-item1.jpg' %}" alt="{{ book.title }}" class="product-item">
+                                        {% endif %}
+                                        <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
+                                    </figure>
+                                    <figcaption>
+                                        <h3>{{ book.title|truncatewords:4 }}</h3>
+                                        <span>{{ book.author }}</span>
+                                        <div class="item-price">${{ book.price|floatformat:2 }}</div>
+                                    </figcaption>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="row">
+                            {% for book in featured_books|slice:"4:8" %}
+                            <div class="col-md-3">
+                                <div class="product-item">
+                                    <figure class="product-style">
+                                        {% if book.image_blob %}
+                                            <img src="data:image/jpeg;base64,{{ book.image_blob|b64encode }}" alt="{{ book.title }}" class="product-item">
+                                        {% else %}
+                                            <img src="{% static 'images/tab-item5.jpg' %}" alt="{{ book.title }}" class="product-item">
+                                        {% endif %}
+                                        <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
+                                    </figure>
+                                    <figcaption>
+                                        <h3>{{ book.title|truncatewords:4 }}</h3>
+                                        <span>{{ book.author }}</span>
+                                        <div class="item-price">${{ book.price|floatformat:2 }}</div>
+                                    </figcaption>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <p class="text-center">No books available.</p>
+                        {% endif %}
+                    </div>
 
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item1.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Portrait photography</h3>
-											<span>Adam Silber</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
+                    <!-- GENRE-SPECIFIC TABS -->
+                    {% for genre_key, genre_data in books_by_genre.items %}
+                    <div id="{{ genre_key }}" data-tab-content>
+                        <div class="row">
+                            {% for book in genre_data.books|slice:":4" %}
+                            <div class="col-md-3">
+                                <div class="product-item">
+                                    <figure class="product-style">
+                                        {% if book.image_blob %}
+                                            <img src="data:image/jpeg;base64,{{ book.image_blob|b64encode }}" alt="{{ book.title }}" class="product-item">
+                                        {% else %}
+                                            <img src="{% static 'images/tab-item1.jpg' %}" alt="{{ book.title }}" class="product-item">
+                                        {% endif %}
+                                        <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
+                                    </figure>
+                                    <figcaption>
+                                        <h3>{{ book.title|truncatewords:4 }}</h3>
+                                        <span>{{ book.author }}</span>
+                                        <div class="item-price">${{ book.price|floatformat:2 }}</div>
+                                    </figcaption>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        {% if genre_data.books|length > 4 %}
+                        <div class="row">
+                            {% for book in genre_data.books|slice:"4:8" %}
+                            <div class="col-md-3">
+                                <div class="product-item">
+                                    <figure class="product-style">
+                                        {% if book.image_blob %}
+                                            <img src="data:image/jpeg;base64,{{ book.image_blob|b64encode }}" alt="{{ book.title }}" class="product-item">
+                                        {% else %}
+                                            <img src="{% static 'images/tab-item5.jpg' %}" alt="{{ book.title }}" class="product-item">
+                                        {% endif %}
+                                        <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
+                                    </figure>
+                                    <figcaption>
+                                        <h3>{{ book.title|truncatewords:4 }}</h3>
+                                        <span>{{ book.author }}</span>
+                                        <div class="item-price">${{ book.price|floatformat:2 }}</div>
+                                    </figcaption>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
 
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item2.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Once upon a time</h3>
-											<span>Klien Marry</span>
-											<div class="item-price">$ 35.00</div>
-										</figcaption>
-									</div>
-								</div>
+                </div>
 
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item3.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Tips of simple lifestyle</h3>
-											<span>Bratt Smith</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
+            </div><!--col-->
 
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item4.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Just felt from outside</h3>
-											<span>Nicole Wilson</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-							</div>
-							<div class="row">
-
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item5.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Peaceful Enlightment</h3>
-											<span>Marmik Lama</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item6.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Great travel at desert</h3>
-											<span>Sanchit Howdy</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item7.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Life among the pirates</h3>
-											<span>Armor Ramsey</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item8.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Simple way of piece life</h3>
-											<span>Armor Ramsey</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-							</div>
-
-						</div>
-						<div id="business" data-tab-content>
-							<div class="row">
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item2.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Peaceful Enlightment</h3>
-											<span>Marmik Lama</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item4.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Great travel at desert</h3>
-											<span>Sanchit Howdy</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item6.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Life among the pirates</h3>
-											<span>Armor Ramsey</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item8.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Simple way of piece life</h3>
-											<span>Armor Ramsey</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-							</div>
-						</div>
-
-						<div id="technology" data-tab-content>
-							<div class="row">
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item1.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Peaceful Enlightment</h3>
-											<span>Marmik Lama</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item3.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Great travel at desert</h3>
-											<span>Sanchit Howdy</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item5.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Life among the pirates</h3>
-											<span>Armor Ramsey</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item7.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Simple way of piece life</h3>
-											<span>Armor Ramsey</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div id="romantic" data-tab-content>
-							<div class="row">
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item1.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Peaceful Enlightment</h3>
-											<span>Marmik Lama</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item3.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Great travel at desert</h3>
-											<span>Sanchit Howdy</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item5.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Life among the pirates</h3>
-											<span>Armor Ramsey</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item7.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Simple way of piece life</h3>
-											<span>Armor Ramsey</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div id="adventure" data-tab-content>
-							<div class="row">
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item5.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Life among the pirates</h3>
-											<span>Armor Ramsey</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item7.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Simple way of piece life</h3>
-											<span>Armor Ramsey</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div id="fictional" data-tab-content>
-							<div class="row">
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item5.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Life among the pirates</h3>
-											<span>Armor Ramsey</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-
-								<div class="col-md-3">
-									<div class="product-item">
-										<figure class="product-style">
-											<img src="images/tab-item7.jpg" alt="Books" class="product-item">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-												Cart</button>
-										</figure>
-										<figcaption>
-											<h3>Simple way of piece life</h3>
-											<span>Armor Ramsey</span>
-											<div class="item-price">$ 40.00</div>
-										</figcaption>
-									</div>
-								</div>
-							</div>
-						</div>
-
-					</div>
-
-				</div><!--inner-tabs-->
-
-			</div>
-		</div>
-	</section>
+        </div>
+    </div>
+</section>
 
 	<section id="quotation" class="align-center pb-5 mb-5">
 		<div class="inner-content">
 			<h2 class="section-title divider">Quote of the day</h2>
 			<blockquote data-aos="fade-up">
-				<q>“The more that you read, the more things you will know. The more that you learn, the more places
-					you’ll go.”</q>
+				<q>"The more that you read, the more things you will know. The more that you learn, the more places
+					you'll go."</q>
 				<div class="author-name">Dr. Seuss</div>
 			</blockquote>
 		</div>
@@ -759,7 +459,7 @@
 						<div class="grid product-grid">
 							<div class="product-item">
 								<figure class="product-style">
-									<img src="images/product-item5.jpg" alt="Books" class="product-item">
+									<img src="{% static 'images/product-item5.jpg' %}" alt="Books" class="product-item">
 									<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
 										Cart</button>
 								</figure>
@@ -769,12 +469,12 @@
 									<div class="item-price">
 										<span class="prev-price">$ 50.00</span>$ 40.00
 									</div>
-								</div>
-							</figcaption>
+								</figcaption>
+							</div>
 
 							<div class="product-item">
 								<figure class="product-style">
-									<img src="images/product-item6.jpg" alt="Books" class="product-item">
+									<img src="{% static 'images/product-item6.jpg' %}" alt="Books" class="product-item">
 									<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
 										Cart</button>
 								</figure>
@@ -784,12 +484,12 @@
 									<div class="item-price">
 										<span class="prev-price">$ 30.00</span>$ 38.00
 									</div>
-								</div>
-							</figcaption>
+								</figcaption>
+							</div>
 
 							<div class="product-item">
 								<figure class="product-style">
-									<img src="images/product-item7.jpg" alt="Books" class="product-item">
+									<img src="{% static 'images/product-item7.jpg' %}" alt="Books" class="product-item">
 									<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
 										Cart</button>
 								</figure>
@@ -799,12 +499,12 @@
 									<div class="item-price">
 										<span class="prev-price">$ 35.00</span>$ 45.00
 									</div>
-								</div>
-							</figcaption>
+								</figcaption>
+							</div>
 
 							<div class="product-item">
 								<figure class="product-style">
-									<img src="images/product-item8.jpg" alt="Books" class="product-item">
+									<img src="{% static 'images/product-item8.jpg' %}" alt="Books" class="product-item">
 									<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
 										Cart</button>
 								</figure>
@@ -814,12 +514,12 @@
 									<div class="item-price">
 										<span class="prev-price">$ 25.00</span>$ 35.00
 									</div>
-								</div>
-							</figcaption>
+								</figcaption>
+							</div>
 
 							<div class="product-item">
 								<figure class="product-style">
-									<img src="images/product-item2.jpg" alt="Books" class="product-item">
+									<img src="{% static 'images/product-item2.jpg' %}" alt="Books" class="product-item">
 									<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
 										Cart</button>
 								</figure>
@@ -893,7 +593,7 @@
 
 								<figure>
 									<a href="#" class="image-hvr-effect">
-										<img src="images/post-img1.jpg" alt="post" class="post-image">
+										<img src="{% static 'images/post-img1.jpg' %}" alt="post" class="post-image">
 									</a>
 								</figure>
 
@@ -927,7 +627,7 @@
 							<article class="column" data-aos="fade-up" data-aos-delay="200">
 								<figure>
 									<a href="#" class="image-hvr-effect">
-										<img src="images/post-img2.jpg" alt="post" class="post-image">
+										<img src="{% static 'images/post-img2.jpg' %}" alt="post" class="post-image">
 									</a>
 								</figure>
 								<div class="post-item">
@@ -960,7 +660,7 @@
 							<article class="column" data-aos="fade-up" data-aos-delay="400">
 								<figure>
 									<a href="#" class="image-hvr-effect">
-										<img src="images/post-img3.jpg" alt="post" class="post-image">
+										<img src="{% static 'images/post-img3.jpg' %}" alt="post" class="post-image">
 									</a>
 								</figure>
 								<div class="post-item">
@@ -1013,7 +713,7 @@
 
 						<div class="col-md-5">
 							<figure>
-								<img src="images/device.png" alt="phone" class="single-image">
+								<img src="{% static 'images/device.png' %}" alt="phone" class="single-image">
 							</figure>
 						</div>
 
@@ -1024,8 +724,8 @@
 									liberolectus nonet psryroin. Amet sed lorem posuere sit iaculis amet, ac urna.
 									Adipiscing fames semper erat ac in suspendisse iaculis.</p>
 								<div class="google-app">
-									<img src="images/google-play.jpg" alt="google play">
-									<img src="images/app-store.jpg" alt="app store">
+									<img src="{% static 'images/google-play.jpg' %}" alt="google play">
+									<img src="{% static 'images/app-store.jpg' %}" alt="app store">
 								</div>
 							</div>
 						</div>
@@ -1044,7 +744,7 @@
 
 					<div class="footer-item">
 						<div class="company-brand">
-							<img src="images/main-logo.png" alt="logo" class="footer-logo">
+							<img src="{% static 'images/main-logo.png' %}" alt="logo" class="footer-logo">
 							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sagittis sed ptibus liberolectus
 								nonet psryroin. Amet sed lorem posuere sit iaculis amet, ac urna. Adipiscing fames
 								semper erat ac in suspendisse iaculis.</p>
@@ -1083,10 +783,10 @@
 						<h5>Discover</h5>
 						<ul class="menu-list">
 							<li class="menu-item">
-								<a href="#">Home</a>
+								<a href="{% url 'index' %}">Home</a>
 							</li>
 							<li class="menu-item">
-								<a href="#">Books</a>
+								<a href="{% url 'all_books' %}">Books</a>
 							</li>
 							<li class="menu-item">
 								<a href="#">Authors</a>
@@ -1110,7 +810,7 @@
 								<a href="#">Sign In</a>
 							</li>
 							<li class="menu-item">
-								<a href="#">View Cart</a>
+								<a href="{% url 'panier_list' %}">View Cart</a>
 							</li>
 							<li class="menu-item">
 								<a href="#">My Wishtlist</a>
