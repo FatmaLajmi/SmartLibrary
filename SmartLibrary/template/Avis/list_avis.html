@@ -1,0 +1,42 @@
+{% extends 'Avis/base.html' %}
+{% block content %}
+<h1>Tous les avis</h1>
+
+<form method="get">
+  Trier par:
+  <select name="order" onchange="this.form.submit()">
+    <option value="date" {% if request.GET.order == 'date' %}selected{% endif %}>Date asc</option>
+    <option value="-date" {% if request.GET.order == '-date' %}selected{% endif %}>Date desc</option>
+    <option value="note" {% if request.GET.order == 'note' %}selected{% endif %}>Note asc</option>
+    <option value="-note" {% if request.GET.order == '-note' %}selected{% endif %}>Note desc</option>
+  </select>
+</form>
+
+<ul>
+  {% for avis in avis_list %}
+    <li>
+      <strong>{{ avis.book_title }}</strong> — {{ avis.author }} — {{ avis.note }} /5 — {{ avis.date }}
+      <a href="{% url 'detail_avis' avis.pk %}">voir</a>
+      <a href="{% url 'modifier_avis' avis.pk %}">modifier</a>
+      <a href="{% url 'supprimer_avis' avis.pk %}">supprimer</a>
+    </li>
+  {% empty %}
+    <li>Aucun avis</li>
+  {% endfor %}
+</ul>
+
+<div>
+  {% if is_paginated %}
+    <div>
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}">Précédent</a>
+      {% endif %}
+      Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}">Suivant</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

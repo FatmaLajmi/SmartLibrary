@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="cart-section py-5">
+    <div class="container d-flex flex-column align-items-center">
+        
+        <h2 class="section-title text-center mb-5">Mon Panier</h2>
+
+        {% if panier_list %}
+        
+        <div class="container" style="max-width:900px; margin:0 auto;">
+            <table class="table table-bordered centered-table align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th>Image</th>
+                        <th>Titre</th>
+                        <th>Prix</th>
+                        <th>Quantité</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in panier_list %}
+                    <tr>
+                        <td>
+                            <img src="{% static 'images/tab-item1.jpg' %}" 
+                                 alt="{{ item.titre }}" 
+                                 style="width: 60px; height: auto; object-fit: cover;">
+                        </td>
+
+                        <td>{{ item.titre }}</td>
+                        <td>${{ item.prix }}</td>
+                        <td>{{ item.quantite }}</td>
+                        <td>${{ item.prix_total }}</td>
+
+                        <td>
+                            <a href="{% url 'update_panier' item.id %}" class="btn btn-warning btn-sm">Modifier</a>
+                            <a href="{% url 'delete_panier' item.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="cart-total mt-4 text-center">
+            <h4>Total panier : ${{ total }}</h4>
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="{% url 'create_panier' %}" class="btn btn-primary mt-3">Ajouter des livres</a>
+            <a href="{% url 'index' %}" class="btn btn-secondary mt-3">Retour à l’accueil</a>
+        </div>
+
+        {% else %}
+
+        <p class="empty-cart text-center">Votre panier est vide.</p>
+
+        <div class="text-center mt-3">
+            <a href="{% url 'create_panier' %}" class="btn btn-primary mt-3">Ajouter des livres</a>
+            <a href="{% url 'index' %}" class="btn btn-secondary mt-3">Retour à l’accueil</a>
+        </div>
+
+        {% endif %}
+        
+    </div>
+</section>
+
+{% endblock %}

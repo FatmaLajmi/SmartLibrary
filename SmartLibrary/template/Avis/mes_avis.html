@@ -1,0 +1,73 @@
+{% extends 'Avis/base.html' %}
+
+{% block content %}
+<h1>Mes Avis</h1>
+
+{% comment %}
+--------------------------------------------------------
+SI PAS DE PARAM author DANS L'URL → AFFICHER MESSAGE
+Ex: /avis/mes/?author=Eya
+--------------------------------------------------------
+{% endcomment %}
+
+{% if not request.GET.author %}
+    <p style="color:red;">
+        ⚠ Aucun utilisateur sélectionné.  
+        Veuillez préciser votre nom dans l’URL :
+    </p>
+
+    <p>
+        Exemple :  
+        <a href="?author=Eya">Voir mes avis (Eya)</a>
+    </p>
+
+{% else %}
+
+    <h3>Avis de <strong>{{ request.GET.author }}</strong></h3>
+
+    {% if mes_avis %}
+        <ul>
+            {% for avis in mes_avis %}
+                <li>
+                    <strong>{{ avis.book_title }}</strong>
+                    — {{ avis.note }}/5  
+                    — {{ avis.date }}  
+                    <br>
+                    {{ avis.commentaire }}
+                    <br>
+                    <a href="{% url 'detail_avis' avis.pk %}">voir</a> |
+                    <a href="{% url 'modifier_avis' avis.pk %}">modifier</a> |
+                    <a href="{% url 'supprimer_avis' avis.pk %}">supprimer</a>
+                </li>
+                <hr>
+            {% endfor %}
+        </ul>
+
+        {% comment %}
+        -----------------------
+        PAGINATION
+        -----------------------
+        {% endcomment %}
+        <div>
+            {% if is_paginated %}
+                <div>
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}&author={{ request.GET.author }}">Précédent</a>
+                    {% endif %}
+
+                    Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}&author={{ request.GET.author }}">Suivant</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+    {% else %}
+        <p>Aucun avis trouvé pour <strong>{{ request.GET.author }}</strong>.</p>
+    {% endif %}
+
+{% endif %}
+
+{% endblock %}
