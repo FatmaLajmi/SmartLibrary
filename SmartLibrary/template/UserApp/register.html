@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | SmartLibrary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&family=Prata&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Raleway', Arial, sans-serif;
+            background-color: #F3F2EC;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #757575;
+            line-height: 2;
+        }
+
+        .register-container {
+            background: #fff;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            border-radius: 4px;
+            padding: 50px 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .register-container img {
+            width: 100px;
+            margin-bottom: 30px;
+        }
+
+        .register-container h2 {
+            font-family: 'Prata', Georgia, serif;
+            font-size: 2.5em;
+            color: #2f2f2f;
+            margin-bottom: 40px;
+            font-weight: 400;
+            line-height: 1.2;
+        }
+
+        .register-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            text-align: left;
+        }
+
+        .register-container form p {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 0;
+        }
+
+        .register-container form label {
+            font-size: 0.9rem;
+            color: #2f2f2f;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .register-container input[type="text"],
+        .register-container input[type="password"],
+        .register-container input[type="email"],
+        .register-container input[type="file"],
+        .register-container input[type="tel"],
+        .register-container select,
+        .register-container textarea {
+            padding: 12px 15px;
+            border: 1px solid #D1D1D1;
+            border-radius: 4px;
+            font-size: 1rem;
+            background-color: #fff;
+            transition: border-color 0.2s;
+            font-family: 'Raleway', Arial, sans-serif;
+            color: #2f2f2f;
+        }
+
+        .register-container input[type="text"]:focus,
+        .register-container input[type="password"]:focus,
+        .register-container input[type="email"]:focus,
+        .register-container input[type="file"]:focus,
+        .register-container input[type="tel"]:focus,
+        .register-container select:focus,
+        .register-container textarea:focus {
+            border-color: #C5A992;
+            outline: none;
+            background: #fff;
+        }
+
+        .register-container textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .register-container button[type="submit"] {
+            background: #C5A992;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 15px 30px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease-in;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .register-container button[type="submit"]:hover {
+            background: #2f2f2f;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(197, 169, 146, 0.3);
+        }
+
+        .register-container .errorlist {
+            color: #d63031;
+            margin: 6px 0 0 0;
+            list-style: none;
+            padding: 0;
+            font-size: 0.85rem;
+        }
+
+        .register-container .messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .register-container .messages li {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .register-container .messages li.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 3px solid #28a745;
+        }
+
+        .register-container .messages li.error {
+            background: #fff5f5;
+            color: #d63031;
+            border-left: 3px solid #d63031;
+        }
+
+        .register-container .messages li.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 3px solid #17a2b8;
+        }
+
+        .register-container .helptext {
+            font-size: 0.8rem;
+            color: #afafaf;
+            margin-top: 6px;
+        }
+
+        .links {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #E0E0E0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            font-size: 0.95rem;
+        }
+
+        .links a {
+            color: #C5A992;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .links a:hover {
+            color: #2f2f2f;
+        }
+
+        .links .home-link {
+            color: #757575;
+            font-size: 0.9rem;
+        }
+
+        .register-container .login-link {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: #757575;
+        }
+
+        .register-container .login-link a {
+            color: #C5A992;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .register-container .login-link a:hover {
+            color: #2f2f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <img src="https://themewagon.github.io/booksaw/images/main-logo.png" alt="SmartLibrary Logo">
+        <h2>Create Your Account</h2>
+
+        {% if messages %}
+            <ul class="messages">
+            {% for message in messages %}
+                <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Register</button>
+        </form>
+
+        <div class="links">
+            <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+            <p class="home-link"><a href="{% url 'index' %}">← Back to Home</a></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | SmartLibrary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&family=Prata&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Raleway', Arial, sans-serif;
+            background-color: #F3F2EC;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #757575;
+            line-height: 2;
+        }
+
+        .login-container {
+            background: #fff;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            border-radius: 4px;
+            padding: 50px 40px;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .login-container img {
+            width: 100px;
+            margin-bottom: 30px;
+        }
+
+        .login-container h2 {
+            font-family: 'Prata', Georgia, serif;
+            font-size: 2.5em;
+            color: #2f2f2f;
+            margin-bottom: 40px;
+            font-weight: 400;
+            line-height: 1.2;
+        }
+
+        .login-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            text-align: left;
+        }
+
+        .login-container form p {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 0;
+        }
+
+        .login-container form label {
+            font-size: 0.9rem;
+            color: #2f2f2f;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .login-container input[type="text"],
+        .login-container input[type="password"],
+        .login-container input[type="email"] {
+            padding: 12px 15px;
+            border: 1px solid #D1D1D1;
+            border-radius: 4px;
+            font-size: 1rem;
+            background-color: #fff;
+            transition: border-color 0.2s;
+            font-family: 'Raleway', Arial, sans-serif;
+            color: #2f2f2f;
+        }
+
+        .login-container input[type="text"]:focus,
+        .login-container input[type="password"]:focus,
+        .login-container input[type="email"]:focus {
+            border-color: #C5A992;
+            outline: none;
+            background: #fff;
+        }
+
+        .login-container button[type="submit"] {
+            background: #C5A992;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 15px 30px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease-in;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .login-container button[type="submit"]:hover {
+            background: #2f2f2f;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(197, 169, 146, 0.3);
+        }
+
+        .login-container .errorlist {
+            color: #d63031;
+            margin: 6px 0 0 0;
+            list-style: none;
+            padding: 0;
+            font-size: 0.85rem;
+        }
+
+        .login-container .non-field-errors {
+            color: #d63031;
+            background: #fff5f5;
+            padding: 12px;
+            border-radius: 4px;
+            border-left: 3px solid #d63031;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .login-container .helptext {
+            font-size: 0.8rem;
+            color: #afafaf;
+            margin-top: 6px;
+        }
+
+        .links {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #E0E0E0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            font-size: 0.95rem;
+        }
+
+        .links a {
+            color: #C5A992;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .links a:hover {
+            color: #2f2f2f;
+        }
+
+        .links .home-link {
+            color: #757575;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="https://themewagon.github.io/booksaw/images/main-logo.png" alt="SmartLibrary Logo">
+        <h2>Sign In to Your Account</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="non-field-errors">{{ form.non_field_errors }}</div>
+            {% endif %}
+            {{ form.as_p }}
+            <button type="submit">Login</button>
+        </form>
+        <div class="links">
+            <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+            <p class="home-link"><a href="{% url 'index' %}">← Back to Home</a></p>
+        </div>
+    </div>
+</body>
+</html>
