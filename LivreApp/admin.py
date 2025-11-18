@@ -7,23 +7,21 @@ from .forms import LivreForm
 class LivreAdmin(admin.ModelAdmin):
     form = LivreForm
 
-    list_display = ('image_tag', 'titre', 'auteur', 'isbn', 'quantite', 'disponible', 'date_ajout')
-    list_display_links = ('image_tag', 'titre')
+    list_display = ('image_tag', 'title', 'author', 'isbn', 'quantity', 'available', 'date_added')
+    list_display_links = ('image_tag', 'title')
     
-    # Formulaire admin
+    # Admin form
     fieldsets = (
-        ("Informations principales", {
-            'fields': ('titre', 'auteur', 'isbn', 'description', 'image_upload')  # <--- changer image en image_upload
+        ("Main Information", {
+            'fields': ('title', 'author', 'isbn', 'description', 'image_upload')  # image → image_upload
         }),
-        ("Détails supplémentaires", {
-            'fields': ('date_publication', 'prix', 'quantite', 'disponible')
+        ("Additional Details", {
+            'fields': ('publication_date', 'price', 'quantity', 'available')
         }),
-        ("Dates (auto)", {
-            'fields': ('date_ajout', 'date_modif'),
+        ("Automatic Dates", {
+            'fields': ('date_added', 'date_modified'),
             'classes': ('collapse',),
         }),
     )
 
-    readonly_fields = ('date_ajout', 'date_modif', 'image_tag')
-
-
+    readonly_fields = ('date_added', 'date_modified', 'image_tag')

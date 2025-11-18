@@ -12,7 +12,8 @@ class LivreForm(forms.ModelForm):
         instance = super().save(commit=False)
         file = self.cleaned_data.get('image_upload')
         if file:
-            instance.image_blob = file.read()  # convertit en BLOB
+            instance.image_blob = file.read()  # convert to BLOB
         if commit:
             instance.save()
         return instance
+
