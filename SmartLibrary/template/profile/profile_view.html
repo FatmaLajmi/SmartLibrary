@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+</head>
+<body>
+    <h1>My Profile</h1>
+
+    <p><strong>First Name:</strong> {{ profile.user.first_name }}</p>
+    <p><strong>Last Name:</strong> {{ profile.user.last_name }}</p>
+    <p><strong>Email:</strong> {{ profile.user.email }}</p>
+    <p><strong>Address:</strong> {{ profile.address }}</p>
+    <p><strong>Phone Number:</strong> {{ profile.phone_number }}</p>
+    <p><strong>Card Number:</strong> **** **** **** {{ profile.bank_card_number|slice:"-4:" }}</p>
+
+    {% if profile.photo %}
+        <p><strong>Photo:</strong></p>
+        <img src="{{ profile.photo.url }}" alt="Profile Photo" width="150">
+    {% else %}
+        <p>No photo uploaded.</p>
+    {% endif %}
+
+    <p><a href="{% url 'profile_edit' %}">Edit Profile</a></p>
+</body>
+</html>

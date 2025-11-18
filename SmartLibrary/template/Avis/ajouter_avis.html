@@ -1,8 +1,18 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<h1>Ajouter un avis</h1>
-<form method="post">{% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Ajouter</button>
-</form>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Ajouter un avis</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <div class="mt-4">
+            <button class="btn btn-primary" type="submit">Ajouter</button>
+            <a href="{% url 'index' %}" class="btn btn-warning">Accueil</a>
+        </div>
+    </form>
+</div>
+
 {% endblock %}
