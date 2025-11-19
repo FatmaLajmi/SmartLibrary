@@ -9,7 +9,7 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
+    path('', include('LivreApp.urls')),
     path('api/', include('LivreAppApi.urls')),  # ton API
     path('avis/', include('AvisApp.urls')),         # frontend MVT
     path('api/avis/', include('AvisAppApi.urls')),

@@ -275,6 +275,59 @@
     </div>
 </section>
 
+<!-- new section catalogue -->
+<section id="featured-books" class="py-5 my-5">
+    <div class="container">
+        
+        <div class="section-header align-center">
+            <div class="title">
+                <span>Notre sélection</span>
+            </div>
+            <h2 class="section-title">Catalogue des livres</h2>
+        </div>
+
+        <div class="product-list" data-aos="fade-up">
+            <div class="row">
+
+                {% for livre in livres %}
+                <div class="col-md-3 mb-4">
+                    <div class="product-item">
+
+                        <figure class="product-style">
+                            {% if livre.image_base64 %}
+                                <img src="data:image/jpeg;base64,{{ livre.image_base64 }}"
+                                     alt="{{ livre.title }}"
+                                     class="product-item">
+                            {% else %}
+                                <img src="{% static 'images/default-book.jpg' %}"
+                                     alt="{{ livre.title }}"
+                                     class="product-item">
+                            {% endif %}
+
+                            <form action="{% url 'ajouter_au_panier' livre.id %}" method="POST">
+								{% csrf_token %}
+								<button type="submit" class="add-to-cart">Add to cart</button>
+							</form>
+
+                        </figure>
+
+                        <figcaption>
+                            <h3>{{ livre.title }}</h3>
+                            <span>{{ livre.author }}</span>
+                            <div class="item-price">$ {{ livre.price }}</div>
+                        </figcaption>
+
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
 <section id="best-selling" class="leaf-pattern-overlay">
     <div class="corner-pattern-overlay"></div>
     <div class="container">
@@ -1195,6 +1248,62 @@
 			</div>
 		</div>
 	</div>
+
+	<script>
+	document.addEventListener("DOMContentLoaded", function () {
+
+		// Sélectionne tous les boutons "Ajouter au panier"
+		const buttons = document.querySelectorAll(".add-to-cart");
+
+		buttons.forEach(btn => {
+			btn.addEventListener("click", function () {
+
+				const title = this.getAttribute("data-title");
+				const price = this.getAttribute("data-price");
+
+				// Données envoyées à l’API
+				const payload = {
+					titre: title,
+					prix: price,
+					quantite: 1
+				};
+
+				fetch("/api/panier/", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"X-CSRFToken": getCookie("csrftoken")
+					},
+					body: JSON.stringify(payload)
+				})
+				.then(response => response.json())
+				.then(data => {
+					alert("Livre ajouté au panier !");
+					console.log(data);
+				})
+				.catch(error => console.error("Erreur :", error));
+			});
+		});
+
+		// Fonction pour récupérer le token CSRF
+		function getCookie(name) {
+			let cookieValue = null;
+			if (document.cookie && document.cookie !== "") {
+				const cookies = document.cookie.split(";");
+				for (let cookie of cookies) {
+					cookie = cookie.trim();
+					if (cookie.startsWith(name + "=")) {
+						cookieValue = cookie.substring(name.length + 1);
+						break;
+					}
+				}
+			}
+			return cookieValue;
+		}
+	});
+	</script>
+
+
 
 	<script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"

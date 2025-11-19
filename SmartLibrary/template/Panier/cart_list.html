@@ -5,7 +5,7 @@
 <section class="cart-section py-5">
     <div class="container d-flex flex-column align-items-center">
         
-        <h2 class="section-title text-center mb-5">Mon Panier</h2>
+        <h2 class="section-title text-center mb-5">My Cart</h2>
 
         {% if panier_list %}
         
@@ -14,9 +14,9 @@
                 <thead class="table-light">
                     <tr>
                         <th>Image</th>
-                        <th>Titre</th>
-                        <th>Prix</th>
-                        <th>Quantité</th>
+                        <th>Title</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
                         <th>Total</th>
                         <th>Actions</th>
                     </tr>
@@ -26,19 +26,34 @@
                     {% for item in panier_list %}
                     <tr>
                         <td>
-                            <img src="{% static 'images/tab-item1.jpg' %}" 
-                                 alt="{{ item.titre }}" 
-                                 style="width: 60px; height: auto; object-fit: cover;">
+                            {% if item.livre.image_base64 %}
+                                <img src="data:image/jpeg;base64,{{ item.livre.image_base64 }}"
+                                     alt="{{ item.livre.title }}"
+                                     style="width: 60px; height: auto; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'images/default-book.jpg' %}"
+                                     alt="{{ item.livre.title }}"
+                                     style="width: 60px; height: auto; object-fit: cover;">
+                            {% endif %}
                         </td>
 
                         <td>{{ item.titre }}</td>
                         <td>${{ item.prix }}</td>
-                        <td>{{ item.quantite }}</td>
+                        <td class="text-center">
+                            <form method="POST" action="{% url 'update_panier_quantite' item.id %}" style="margin:0; display:inline-block;">
+                                {% csrf_token %}
+                                <input type="number" name="quantite" value="{{ item.quantite }}" min="1"
+                                    style="width: 60px; text-align: center;" 
+                                    class="form-control form-control-sm" onchange="this.form.submit()">
+                            </form>
+                        </td>
+
+
+                        <!-- Line total -->
                         <td>${{ item.prix_total }}</td>
 
                         <td>
-                            <a href="{% url 'update_panier' item.id %}" class="btn btn-warning btn-sm">Modifier</a>
-                            <a href="{% url 'delete_panier' item.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                            <a href="{% url 'delete_panier' item.id %}" class="btn btn-danger btn-sm">Delete</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -47,21 +62,19 @@
         </div>
 
         <div class="cart-total mt-4 text-center">
-            <h4>Total panier : ${{ total }}</h4>
+            <h4>Cart Total: ${{ total }}</h4>
         </div>
 
         <div class="text-center mt-3">
-            <a href="{% url 'create_panier' %}" class="btn btn-primary mt-3">Ajouter des livres</a>
-            <a href="{% url 'index' %}" class="btn btn-secondary mt-3">Retour à l’accueil</a>
+            <a href="{% url 'index' %}" class="btn btn-secondary mt-3">Back to Home</a>
         </div>
 
         {% else %}
 
-        <p class="empty-cart text-center">Votre panier est vide.</p>
+        <p class="empty-cart text-center">Your cart is empty.</p>
 
         <div class="text-center mt-3">
-            <a href="{% url 'create_panier' %}" class="btn btn-primary mt-3">Ajouter des livres</a>
-            <a href="{% url 'index' %}" class="btn btn-secondary mt-3">Retour à l’accueil</a>
+            <a href="{% url 'index' %}" class="btn btn-secondary mt-3">Back to Home</a>
         </div>
 
         {% endif %}

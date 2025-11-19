@@ -50,6 +50,12 @@ class Livre(models.Model):
     ]
     genre = models.CharField(max_length=50, choices=GENRE_CHOICES, blank=True, null=True)
 
+    @property
+    def image_base64(self):
+        if self.image_blob:
+            return base64.b64encode(self.image_blob).decode('utf-8')
+        return None
+
     def image_tag(self):
         """Display image preview in admin"""
         if self.image_blob:
