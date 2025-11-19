@@ -1,7 +1,6 @@
 from django.db import models
 from LivreApp.models import Livre
 #from django.contrib.auth.models import User
-#from SmartLibrary.LivreApp.models import Livre
 
 class Panier(models.Model):
     """ 
