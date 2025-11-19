@@ -4,14 +4,12 @@ from django.conf.urls.static import static
 from django.conf import settings
 from . import views
 
-
-
-
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('LivreApp.urls')),
-    path('api/', include('LivreAppApi.urls')),  # ton API
-    path('avis/', include('AvisApp.urls')),         # frontend MVT
+    path('', views.index, name='index'),
+    path('', include('LivreApp.urls')),  # ← AJOUTER CETTE LIGNE
+    path('api/', include('LivreAppApi.urls')),
+    path('avis/', include('AvisApp.urls')),
     path('api/avis/', include('AvisAppApi.urls')),
     path('Panier/', include('PanierApp.urls')),
     path('api/', include('PanierAppApi.urls')),

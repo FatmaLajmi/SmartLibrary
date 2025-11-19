@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     'PanierApp',
     'PanierAppApi',
     'UserApp',       
-    'ProfileApp'
+    'ProfileApp',
+    'StockApp',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
