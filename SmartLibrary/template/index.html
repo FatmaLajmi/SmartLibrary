@@ -936,59 +936,6 @@
 		</div>
 	</div>
 
-	<script>
-	document.addEventListener("DOMContentLoaded", function () {
-
-		// Sélectionne tous les boutons "Ajouter au panier"
-		const buttons = document.querySelectorAll(".add-to-cart");
-
-		buttons.forEach(btn => {
-			btn.addEventListener("click", function () {
-
-				const title = this.getAttribute("data-title");
-				const price = this.getAttribute("data-price");
-
-				// Données envoyées à l’API
-				const payload = {
-					titre: title,
-					prix: price,
-					quantite: 1
-				};
-
-				fetch("/api/panier/", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						"X-CSRFToken": getCookie("csrftoken")
-					},
-					body: JSON.stringify(payload)
-				})
-				.then(response => response.json())
-				.then(data => {
-					console.log(data);
-				})
-				.catch(error => console.error("Erreur :", error));
-			});
-		});
-
-		// Fonction pour récupérer le token CSRF
-		function getCookie(name) {
-			let cookieValue = null;
-			if (document.cookie && document.cookie !== "") {
-				const cookies = document.cookie.split(";");
-				for (let cookie of cookies) {
-					cookie = cookie.trim();
-					if (cookie.startsWith(name + "=")) {
-						cookieValue = cookie.substring(name.length + 1);
-						break;
-					}
-				}
-			}
-			return cookieValue;
-		}
-	});
-	</script>
-
 
 
 	<script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
