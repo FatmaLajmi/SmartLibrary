@@ -1,98 +1,120 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Créer mon profil - Ma Librairie{% endblock %}
+{% block title %}Créer mon profil - SmartLibrary{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-6">
 
-            <div class="glass-card shadow-lg">
-
-                <!-- HEADER -->
-                <div class="p-4 border-bottom">
-                    <h2 class="fw-bold text-primary m-0">
-                        <i class="bi bi-person-plus-fill me-2"></i>Créer votre profil
-                    </h2>
-                </div>
-
-                <div class="p-4">
-
-                    <p class="text-muted">Remplissez les champs ci-dessous pour créer votre profil.</p>
-
-                    <form method="POST" enctype="multipart/form-data" novalidate>
-                        {% csrf_token %}
-
-                        {% if form.errors %}
-                        <div class="alert alert-danger alert-dismissible fade show">
-                            <strong>Erreur :</strong> Certains champs sont incorrects.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                        {% endif %}
-
-                        <div class="form-section">
-                            <div class="form-block">
-                                {{ form.as_p }}
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill mt-4 shadow-lg">
-                            <i class="bi bi-check-circle me-2"></i>Créer le profil
-                        </button>
-
-                    </form>
-
-                </div>
-
-            </div>
-
-        </div>
-    </div>
-</div>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&family=Prata&display=swap" rel="stylesheet">
 
 <style>
+    body { background-color:#F3F2EC; font-family:'Raleway', sans-serif; }
 
-.glass-card {
-    background: rgba(255,255,255,0.85);
-    border-radius: 20px;
-    backdrop-filter: blur(12px);
-    transition: 0.3s;
-}
-.glass-card:hover {
-    transform: translateY(-5px);
-}
+    .profile-container {
+        max-width: 560px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 45px 40px;
+        border-radius: 4px;
+        box-shadow: 0 8px 30px rgba(31, 38, 135, 0.15);
+    }
 
-/* Section */
-.form-section {
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid #dfdfdf;
-    animation: fadeIn .5s ease;
-}
-.form-block p { margin-bottom: 1.4rem; }
+    .profile-container h2 {
+        font-family: 'Prata', serif;
+        font-size: 2.2rem;
+        text-align: center;
+        color: #2f2f2f;
+        margin-bottom: 30px;
+        font-weight: 400;
+    }
 
-/* Inputs */
-input, textarea, select {
-    border-radius: 8px !important;
-    padding: 10px !important;
-}
-input:focus, textarea:focus, select:focus {
-    border-color: #c5d300 !important;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
-}
+    form p { display: flex; flex-direction: column; margin-bottom: 18px; }
 
-/* Button */
-.btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(13,110,253,0.45);
-}
+    label {
+        font-weight: 600;
+        margin-bottom: 6px;
+        font-size: 0.95rem;
+        color: #2f2f2f;
+    }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px);}
-    to { opacity: 1; transform: translateY(0);}
-}
+    input, select, textarea {
+        padding: 12px 15px;
+        border: 1px solid #D1D1D1;
+        border-radius: 4px;
+        font-size: 1rem;
+        color: #2f2f2f;
+        transition: border-color 0.2s;
+    }
 
+    input:focus, select:focus, textarea:focus {
+        border-color: #C5A992;
+        outline: none;
+    }
+
+    button {
+        width: 100%;
+        padding: 15px;
+        background: #C5A992;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        transition: .3s ease;
+    }
+
+    button:hover {
+        background: #2f2f2f;
+        transform: translateY(-1px);
+    }
+
+    .alert {
+        padding: 12px;
+        background: #fff5f5;
+        border-left: 3px solid #d63031;
+        color: #d63031;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        font-size: .9rem;
+    }
 </style>
+
+
+<div class="profile-container">
+
+    <h2>Créer votre profil</h2>
+
+    {% if form.errors %}
+        <div class="alert">
+            Certains champs sont incorrects.
+        </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    
+    {% for field in form %}
+        <p>
+            <label for="{{ field.id_for_label }}">
+                {% if field.name == 'image_upload' %}
+                    Photo de profil
+                {% else %}
+                    {{ field.label }}
+                {% endif %}
+            </label>
+            {{ field }}
+            {% if field.errors %}
+                <span style="color: red;">{{ field.errors }}</span>
+            {% endif %}
+        </p>
+    {% endfor %}
+
+    <button type="submit">Créer le profil</button>
+</form>
+
+</div>
+
 {% endblock %}

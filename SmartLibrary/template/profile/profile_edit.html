@@ -1,139 +1,121 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Modifier mon profil - Ma Librairie{% endblock %}
+{% block title %}Modifier le profil - SmartLibrary{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
 
-            <div class="glass-card shadow-lg">
-
-                <!-- HEADER -->
-                <div class="p-4 border-bottom d-flex justify-content-between align-items-center">
-                    <h2 class="fw-bold text-primary m-0">
-                        <i class="bi bi-pencil-square me-2"></i>Modifier le profil
-                    </h2>
-                </div>
-
-                <div class="p-4">
-
-                    <p class="text-muted mb-4">Mettez à jour vos informations personnelles et votre profil.</p>
-
-                    <form method="POST" enctype="multipart/form-data" novalidate>
-                        {% csrf_token %}
-
-                        {% if user_form.errors or profile_form.errors %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>Erreur :</strong> Veuillez corriger les champs incorrects.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                        {% endif %}
-
-                        <!-- SECTION USER -->
-                        <div class="form-section">
-                            <h5 class="section-title">
-                                <i class="bi bi-person-circle me-2"></i>Informations utilisateur
-                            </h5>
-
-                            <div class="form-block">
-                                {{ user_form.as_p }}
-                            </div>
-                        </div>
-
-                        <hr class="my-4">
-
-                        <!-- SECTION PROFILE -->
-                        <div class="form-section">
-                            <h5 class="section-title">
-                                <i class="bi bi-card-text me-2"></i>Informations de profil
-                            </h5>
-
-                            <div class="form-block">
-                                {{ profile_form.as_p }}
-                            </div>
-                        </div>
-
-                        <!-- BUTTONS -->
-                        <div class="mt-4 d-flex flex-column flex-sm-row gap-3">
-                            <button type="submit" class="btn btn-primary btn-lg shadow-lg rounded-pill w-100">
-                                <i class="bi bi-check-circle me-2"></i>Enregistrer les modifications
-                            </button>
-
-                            <a href="{% url 'profile_view' %}" class="btn btn-secondary btn-lg rounded-pill w-100">
-                                <i class="bi bi-x-circle me-2"></i>Annuler
-                            </a>
-                        </div>
-
-                    </form>
-                </div>
-
-            </div>
-
-        </div>
-    </div>
-</div>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&family=Prata&display=swap" rel="stylesheet">
 
 <style>
+    body { background:#F3F2EC; font-family:'Raleway'; }
 
-/* Card style */
-.glass-card {
-    background: rgba(255,255,255,0.85);
-    border-radius: 20px;
-    backdrop-filter: blur(12px);
-    overflow: hidden;
-    transition: .3s ease;
-}
-.glass-card:hover {
-    transform: translateY(-5px);
-}
+    .profile-container {
+        max-width: 650px;
+        margin: 40px auto;
+        background:#fff;
+        padding:45px 40px;
+        border-radius:4px;
+        box-shadow:0 8px 30px rgba(31,38,135,0.15);
+    }
 
-/* Section style */
-.form-section {
-    background: #f8f9fa;
-    border-radius: 12px;
-    padding: 20px;
-    border: 1px solid #e2e2e2;
-    animation: fadeIn .5s ease;
-}
-.section-title {
-    font-weight: 600;
-    color: #312b07;
-    margin-bottom: 15px;
-}
-.form-block p {
-    margin-bottom: 1.5rem;
-}
+    h2 {
+        font-family:'Prata', serif;
+        font-size:2.2rem;
+        text-align:center;
+        color:#2f2f2f;
+        margin-bottom:35px;
+    }
 
-/* Inputs */
-input, textarea, select {
-    border-radius: 8px !important;
-    padding: 10px !important;
-    border: 1px solid #ced4da !important;
-}
-input:focus, textarea:focus, select:focus {
-    border-color: #000000 !important;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
-}
+    .section-title {
+        font-size:1.1rem;
+        font-weight:600;
+        margin-bottom:12px;
+        color:#2f2f2f;
+    }
 
-/* Buttons */
-.btn {
-    transition: .3s ease;
-}
-.btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 18px rgba(13,110,253,0.4);
-}
-.btn-secondary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 18px rgba(108,117,125,0.4);
-}
+    .section-block {
+        background:#F9F9F9;
+        padding:20px;
+        border-radius:4px;
+        border:1px solid #E0E0E0;
+        margin-bottom:25px;
+    }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px);}
-    to { opacity: 1; transform: translateY(0);}
-}
+    form p { display:flex; flex-direction:column; }
 
+    label { font-weight:600; color:#2f2f2f; margin-bottom:6px; }
+
+    input, select, textarea {
+        padding:12px;
+        border:1px solid #D1D1D1;
+        border-radius:4px;
+        margin-bottom:12px;
+        transition:.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        border-color:#C5A992;
+        outline:none;
+    }
+
+    .btn-save {
+        width:100%;
+        padding:15px;
+        background:#C5A992;
+        color:white;
+        font-weight:600;
+        border:none;
+        border-radius:4px;
+        transition:.3s ease;
+        margin-bottom:15px;
+    }
+
+    .btn-save:hover { background:#2f2f2f; }
+
+    .btn-cancel {
+        width:100%;
+        padding:15px;
+        background:#757575;
+        color:white;
+        border:none;
+        border-radius:4px;
+        font-weight:600;
+        transition:.3s;
+    }
+
+    .btn-cancel:hover { background:black; }
 </style>
+
+
+<div class="profile-container">
+
+    <h2>Modifier le profil</h2>
+
+    {% if user_form.errors or profile_form.errors %}
+    <div class="alert">
+        Veuillez corriger les champs incorrects.
+    </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="section-block">
+            <div class="section-title">Informations utilisateur</div>
+            {{ user_form.as_p }}
+        </div>
+
+        <div class="section-block">
+            <div class="section-title">Informations du profil</div>
+            {{ profile_form.as_p }}
+        </div>
+
+        <button class="btn-save">Enregistrer les modifications</button>
+        <a href="{% url 'profile_view' %}">
+            <button type="button" class="btn-cancel">Annuler</button>
+        </a>
+    </form>
+</div>
+
 {% endblock %}

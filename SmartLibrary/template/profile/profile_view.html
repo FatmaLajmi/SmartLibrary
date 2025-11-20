@@ -1,186 +1,125 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Mon profil - Ma Librairie{% endblock %}
+{% block title %}Mon profil - SmartLibrary{% endblock %}
 
 {% block content %}
-<div class="container mt-5 mb-5">
-    <div class="row justify-content-center">
-        <div class="col-md-10 col-lg-8">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0 fw-bold">
-                        <i class="bi bi-person-circle me-2"></i>Mon profil
-                    </h2>
-                    <a href="{% url 'profile_edit' %}" class="btn btn-light btn-sm shadow-sm">
-                        <i class="bi bi-pencil-fill me-1"></i>Modifier
-                    </a>
-                </div>
-                <div class="card-body p-4">
-                    <!-- Photo de profil -->
-                    <div class="text-center mb-4 pb-4 border-bottom">
-                        <div class="profile-photo-container position-relative d-inline-block">
-                            {% if profile.photo %}
-                                <img src="{{ profile.photo.url }}" alt="Photo de profil" 
-                                     class="rounded-circle shadow" width="150" height="150" 
-                                     style="object-fit: cover; border: 4px solid #000000;">
-                            {% else %}
-                                <div class="rounded-circle bg-gradient d-inline-flex align-items-center justify-content-center shadow" 
-                                     style="width: 150px; height: 150px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: 4px solid #0d6efd;">
-                                    <span class="text-white fs-1 fw-bold">
-                                        {{ profile.user.first_name|first|upper }}{{ profile.user.last_name|first|upper }}
-                                    </span>
-                                </div>
-                            {% endif %}
-                        </div>
-                        <h3 class="mt-3 mb-1 fw-bold">{{ profile.user.first_name }} {{ profile.user.last_name }}</h3>
-                        <p class="text-muted mb-0">{{ profile.user.email }}</p>
-                    </div>
 
-                    <!-- Informations du profil -->
-                    <div class="profile-details">
-                        <h5 class="text-primary fw-semibold mb-3">
-                            <i class="bi bi-info-circle me-2"></i>Informations personnelles
-                        </h5>
-                        
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <div class="info-card p-3 h-100">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <i class="bi bi-person text-primary me-2"></i>
-                                        <strong class="text-secondary">Prénom</strong>
-                                    </div>
-                                    <p class="mb-0 ms-4">{{ profile.user.first_name }}</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="info-card p-3 h-100">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <i class="bi bi-person-badge text-primary me-2"></i>
-                                        <strong class="text-secondary">Nom</strong>
-                                    </div>
-                                    <p class="mb-0 ms-4">{{ profile.user.last_name }}</p>
-                                </div>
-                            </div>
-                        </div>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&family=Prata&display=swap" rel="stylesheet">
 
-                        <div class="info-card p-3 mb-3">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-envelope text-primary me-2"></i>
-                                <strong class="text-secondary">Email</strong>
-                            </div>
-                            <p class="mb-0 ms-4">{{ profile.user.email }}</p>
-                        </div>
+<style>
+    body { background:#F3F2EC; font-family:'Raleway'; }
 
-                        <div class="info-card p-3 mb-3">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-geo-alt text-primary me-2"></i>
-                                <strong class="text-secondary">Adresse</strong>
-                            </div>
-                            <p class="mb-0 ms-4">{{ profile.address|default:"Non renseignée" }}</p>
-                        </div>
+    .view-container {
+        max-width:800px;
+        margin:50px auto;
+        background:#fff;
+        padding:40px;
+        border-radius:4px;
+        box-shadow:0 8px 32px rgba(31,38,135,0.15);
+    }
 
-                        <div class="info-card p-3 mb-3">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-telephone text-primary me-2"></i>
-                                <strong class="text-secondary">Numéro de téléphone</strong>
-                            </div>
-                            <p class="mb-0 ms-4">{{ profile.phone_number|default:"Non renseigné" }}</p>
-                        </div>
+    .header {
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:25px;
+    }
 
-                        <div class="info-card p-3">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-credit-card text-primary me-2"></i>
-                                <strong class="text-secondary">Carte bancaire</strong>
-                            </div>
-                            <p class="mb-0 ms-4">
-                                <span class="badge bg-secondary">**** **** **** {{ profile.bank_card_number|slice:"-4:" }}</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    h2 {
+        font-family:'Prata';
+        font-size:2rem;
+        color:#2f2f2f;
+    }
+
+    .btn {
+        background:#C5A992;
+        color:white;
+        padding:10px 18px;
+        border-radius:4px;
+        font-size:.9rem;
+        text-decoration:none;
+        font-weight:600;
+        transition:.3s;
+    }
+    .btn:hover { background:#2f2f2f; }
+
+    .profile-photo {
+        text-align:center;
+        margin-bottom:30px;
+    }
+
+    .profile-photo img {
+        width:150px; height:150px;
+        border-radius:50%;
+        object-fit:cover;
+        border:4px solid #C5A992;
+    }
+
+    .info-block {
+        background:#FAFAFA;
+        border:1px solid #E0E0E0;
+        padding:18px;
+        border-radius:4px;
+        margin-bottom:15px;
+    }
+
+    .info-label {
+        font-size:.85rem;
+        font-weight:600;
+        color:#757575;
+        margin-bottom:4px;
+    }
+
+    .info-value {
+        font-size:1.05rem;
+        color:#2f2f2f;
+    }
+
+</style>
+
+<div class="view-container">
+
+    <div class="header">
+        <h2>Mon profil</h2>
+        <div>
+            <a href="{% url 'profile_edit' %}" class="btn">Modifier</a>
+            <a href="{% url 'index' %}" class="btn" style="background:#757575;">home</a>
         </div>
+    </div>
+
+    <div class="profile-photo">
+            {% if image_data %}
+            <img src="data:image/jpeg;base64,{{ image_data }}" alt="Photo">
+            {% else %}
+            <img src="{% static 'default-avatar.png' %}" alt="Profile">
+            {% endif %}
+    </div>
+
+    <div class="info-block">
+        <div class="info-label">Nom complet</div>
+        <div class="info-value">{{ profile.user.first_name }} {{ profile.user.last_name }}</div>
+    </div>
+
+    <div class="info-block">
+        <div class="info-label">Email</div>
+        <div class="info-value">{{ profile.user.email }}</div>
+    </div>
+
+    <div class="info-block">
+        <div class="info-label">Adresse</div>
+        <div class="info-value">{{ profile.address|default:"Non renseignée" }}</div>
+    </div>
+
+    <div class="info-block">
+        <div class="info-label">Téléphone</div>
+        <div class="info-value">{{ profile.phone_number|default:"Non renseigné" }}</div>
+    </div>
+
+    <div class="info-block">
+        <div class="info-label">Carte bancaire</div>
+        <div class="info-value">**** **** **** {{ profile.bank_card_number|slice:"-4:" }}</div>
     </div>
 </div>
 
-<style>
-.card {
-    border-radius: 1rem;
-    overflow: hidden;
-}
-
-.card-header {
-    border-bottom: none;
-}
-
-.profile-photo-container {
-    animation: fadeInScale 0.5s ease-out;
-}
-
-@keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.info-card {
-    background-color: #f8f9fa;
-    border-radius: 0.75rem;
-    border: 1px solid #e9ecef;
-    transition: all 0.3s ease;
-}
-
-.info-card:hover {
-    background-color: #e9ecef;
-    transform: translateX(5px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.info-card i {
-    font-size: 1.25rem;
-}
-
-.info-card strong {
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.info-card p {
-    font-size: 1rem;
-    color: #212529;
-}
-
-.btn-light:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.profile-details {
-    animation: fadeInUp 0.6s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.badge {
-    font-size: 0.9rem;
-    padding: 0.5rem 0.75rem;
-    font-weight: 500;
-}
-</style>
 {% endblock %}
