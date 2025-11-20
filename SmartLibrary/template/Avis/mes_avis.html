@@ -1,73 +1,105 @@
 {% extends 'Avis/base.html' %}
 
 {% block content %}
-<h1>Mes Avis</h1>
 
-{% comment %}
---------------------------------------------------------
-SI PAS DE PARAM author DANS L'URL → AFFICHER MESSAGE
-Ex: /avis/mes/?author=Eya
---------------------------------------------------------
-{% endcomment %}
+<div class="container mt-5">
 
-{% if not request.GET.author %}
-    <p style="color:red;">
-        ⚠ Aucun utilisateur sélectionné.  
-        Veuillez préciser votre nom dans l’URL :
-    </p>
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold">My Reviews</h1>
+    </div>
 
-    <p>
-        Exemple :  
-        <a href="?author=Eya">Voir mes avis (Eya)</a>
-    </p>
-
-{% else %}
-
-    <h3>Avis de <strong>{{ request.GET.author }}</strong></h3>
-
-    {% if mes_avis %}
-        <ul>
-            {% for avis in mes_avis %}
-                <li>
-                    <strong>{{ avis.book_title }}</strong>
-                    — {{ avis.note }}/5  
-                    — {{ avis.date }}  
-                    <br>
-                    {{ avis.commentaire }}
-                    <br>
-                    <a href="{% url 'detail_avis' avis.pk %}">voir</a> |
-                    <a href="{% url 'modifier_avis' avis.pk %}">modifier</a> |
-                    <a href="{% url 'supprimer_avis' avis.pk %}">supprimer</a>
-                </li>
-                <hr>
-            {% endfor %}
-        </ul>
-
-        {% comment %}
-        -----------------------
-        PAGINATION
-        -----------------------
-        {% endcomment %}
-        <div>
-            {% if is_paginated %}
-                <div>
-                    {% if page_obj.has_previous %}
-                        <a href="?page={{ page_obj.previous_page_number }}&author={{ request.GET.author }}">Précédent</a>
-                    {% endif %}
-
-                    Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
-
-                    {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}&author={{ request.GET.author }}">Suivant</a>
-                    {% endif %}
-                </div>
-            {% endif %}
+    {% if not request.GET.author %}
+        <!-- No author selected -->
+        <div class="alert alert-warning shadow-sm p-4" style="background:#FFF7EF; border-left:5px solid #C49A6C;">
+            <p class="mb-2">
+                ⚠ No user selected. Please specify your name in the URL:
+            </p>
+            <p>
+                Example: <a href="?author=Eya" class="text-decoration-none" style="color:#A1785C;">View my reviews (Eya)</a>
+            </p>
         </div>
 
     {% else %}
-        <p>Aucun avis trouvé pour <strong>{{ request.GET.author }}</strong>.</p>
+
+        <h3 class="mb-4">Reviews by <strong>{{ request.GET.author }}</strong></h3>
+
+        {% if mes_avis %}
+            <div class="row">
+                {% for avis in mes_avis %}
+                <div class="col-md-12 mb-3">
+                    <div class="card shadow-sm border-0" style="background:#FFFDF9;">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="fw-bold text-dark mb-1">{{ avis.book_title }}</h5>
+                                    <p class="text-muted mb-2">Rating: 
+                                        <span class="text-warning">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= avis.note %}
+                                                    ⭐
+                                                {% else %}
+                                                    ☆
+                                                {% endif %}
+                                            {% endfor %}
+                                        </span>
+                                        <span class="badge rounded-pill" style="background:#C1A48A;">{{ avis.note }}/5</span>
+                                    </p>
+                                    <p class="text-secondary mb-2">{{ avis.commentaire|truncatewords:30 }}</p>
+                                    <small class="text-muted"><i class="far fa-calendar"></i> {{ avis.date|date:"d/m/Y" }}</small>
+                                </div>
+
+                                <div class="d-flex flex-column text-end">
+                                    <a href="{% url 'detail_avis' avis.pk %}" class="btn btn-sm text-white mb-2" style="background:#A1785C;">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                    <a href="{% url 'modifier_avis' avis.pk %}" class="btn btn-sm text-white mb-2" style="background:#C49A6C;">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a href="{% url 'supprimer_avis' avis.pk %}" class="btn btn-sm text-white" style="background:#8C4F4F;">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link border-0" style="background:#E8DFD3;" href="?page={{ page_obj.previous_page_number }}&author={{ request.GET.author }}">Previous</a>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item disabled">
+                        <span class="page-link border-0" style="background:#F5F2ED;">
+                            Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link border-0" style="background:#E8DFD3;" href="?page={{ page_obj.next_page_number }}&author={{ request.GET.author }}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+
+        {% else %}
+            <div class="alert alert-info shadow-sm p-4" style="background:#FFF7EF; border-left:5px solid #C49A6C;">
+                <p class="mb-0">No reviews found for <strong>{{ request.GET.author }}</strong>.</p>
+            </div>
+        {% endif %}
+
     {% endif %}
 
-{% endif %}
+</div>
 
 {% endblock %}

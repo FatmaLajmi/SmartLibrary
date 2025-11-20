@@ -1,83 +1,129 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <h2 class="text-center mb-4">Add A rate</h2>
 
-            <!-- Informations du livre (read-only) -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">book informations</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <strong>book title</strong>
-                            <p class="text-primary mb-0">{{ livre.title }}</p>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <strong>book author</strong>
-                            <p class="text-secondary mb-0">{{ livre.author }}</p>
-                        </div>
-                    </div>
-                    {% if livre.description %}
-                    <div class="mt-2">
-                        <strong>Description :</strong>
-                        <p class="text-muted mb-0">{{ livre.description|truncatewords:50 }}</p>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
+<style>
+    .rate-card {
+        max-width: 650px;
+        margin: auto;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #FAF7F2;
+        border: 1px solid #E5DDD3;
+    }
 
-            <!-- Formulaire d'ajout d'avis -->
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Votre avis</h5>
-                </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        
-                        <!-- Note -->
-                        <div class="mb-3">
-                            <label for="{{ form.note.id_for_label }}" class="form-label">
-                                <strong>Note :</strong> <span class="text-danger">*</span>
-                            </label>
-                            {{ form.note }}
-                            {% if form.note.errors %}
-                                <div class="text-danger mt-1">{{ form.note.errors }}</div>
-                            {% endif %}
-                            <small class="form-text text-muted">Donnez une note entre 0 et 5</small>
-                        </div>
+    .rate-header {
+        background: #A6907C;
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
 
-                        <!-- Commentaire -->
-                        <div class="mb-3">
-                            <label for="{{ form.commentaire.id_for_label }}" class="form-label">
-                                <strong>Commentaire :</strong>
-                            </label>
-                            {{ form.commentaire }}
-                            {% if form.commentaire.errors %}
-                                <div class="text-danger mt-1">{{ form.commentaire.errors }}</div>
-                            {% endif %}
-                            <small class="form-text text-muted">Share your opinion</small>
-                        </div>
+    .rate-subtitle {
+        color: #74642F;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
 
-                        <hr>
+    .custom-btn-primary {
+        background-color: #A6907C !important;
+        border: none;
+        color: white !important;
+        padding: 10px 25px;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
 
-                        <div class="d-flex justify-content-between">
-                            <button class="btn btn-primary btn-lg" type="submit">
-                                <i class="fas fa-check"></i> Confirm
-                            </button>
-                            <a href="{% url 'index' %}" class="btn btn-secondary">
-                                <i class="fas fa-times"></i> Cancel
-                            </a>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    .custom-btn-primary:hover {
+        background-color: #8B7866 !important;
+    }
+
+    .custom-btn-secondary {
+        background-color: #D6C8BC !important;
+        border: none;
+        color: #4B3F35 !important;
+        padding: 10px 25px;
+        border-radius: 8px;
+    }
+
+    .info-box {
+        background: #F3EEE8;
+        border-left: 4px solid #A6907C;
+        padding: 15px;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="container my-5">
+
+    <div class="rate-card shadow">
+
+        <!-- Header -->
+        <div class="rate-header">
+            <h2 class="mb-0">Add a Review</h2>
+            <small>Share your opinion about this book</small>
         </div>
+
+        <div class="p-4">
+
+            <!-- Book Information -->
+            <h5 class="rate-subtitle">Book Information</h5>
+            <div class="info-box mb-4">
+                <p><strong>Title :</strong> <span class="text-primary">{{ livre.title }}</span></p>
+                <p><strong>Author :</strong> <span class="text-secondary">{{ livre.author }}</span></p>
+
+                {% if livre.description %}
+                <p class="mt-2"><strong>Description:</strong>
+                    <br>
+                    <span class="text-muted">{{ livre.description|truncatewords:40 }}</span>
+                </p>
+                {% endif %}
+            </div>
+
+            <!-- Review Form -->
+            <h5 class="rate-subtitle">Your Review</h5>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <!-- Rating -->
+                <div class="mb-3">
+                    <label class="form-label">
+                        <strong>Rating:</strong>
+                    </label>
+
+                    <div class="rating-container p-3 rounded shadow-sm mb-2">
+                        {{ form.note }}
+                    </div>
+
+                    <small class="text-muted d-block">Choose a value between 0 and 5.</small>
+                </div>
+
+                <!-- Comment -->
+                <div class="mb-3">
+                    <label class="form-label"><strong>Comment:</strong></label>
+                    {{ form.commentaire }}
+                    <small class="text-muted d-block">Tell us what you liked or disliked.</small>
+                </div>
+
+                <hr>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between">
+                    <button class="custom-btn-primary" type="submit">
+                        <i class="fas fa-check"></i> Submit
+                    </button>
+
+                    <a href="{% url 'index' %}" class="custom-btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+
+            </form>
+        </div>
+
     </div>
+
 </div>
+
 {% endblock %}

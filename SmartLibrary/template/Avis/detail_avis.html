@@ -1,89 +1,148 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<div class="container mt-5">
+
+<style>
+    .review-card {
+        background: #FFFDF8;
+        border: 1px solid #E8E2D9;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .review-header {
+        background: #C7A27A;
+        color: white;
+        padding: 20px;
+    }
+
+    .review-section {
+        background: #F5F0E8;
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    .review-label {
+        color: #8B6F47;
+        font-weight: 600;
+    }
+
+    .btn-brown {
+        background: #8B6F47;
+        color: white;
+        border: none;
+    }
+    .btn-brown:hover {
+        background: #6d5637;
+        color: white;
+    }
+
+    .btn-beige {
+        background: #C7A27A;
+        color: white;
+        border: none;
+    }
+    .btn-beige:hover {
+        background: #b08965;
+        color: white;
+    }
+
+    .star-rating span {
+        font-size: 28px;
+        color: #C7A27A;
+    }
+</style>
+
+<div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <!-- En-tête -->
-            <div class="mb-4">
-                <h1 class="text-center">Détail de l'avis</h1>
-            </div>
 
-            <!-- Carte principale -->
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Informations du livre</h4>
+            <!-- Title -->
+            <h1 class="text-center mb-4" style="color:#8B6F47;">Review Details</h1>
+
+            <!-- Review Card -->
+            <div class="review-card shadow">
+
+                <!-- Header -->
+                <div class="review-header">
+                    <h4 class="mb-0">Book Information</h4>
                 </div>
+
                 <div class="card-body">
-                    <!-- Informations du livre -->
-                    <div class="mb-4 p-3 bg-light rounded">
+
+                    <!-- Book Section -->
+                    <div class="review-section mb-4">
                         <div class="row">
                             <div class="col-md-6 mb-2">
-                                <strong>Titre du livre :</strong>
-                                <p class="mb-0 text-primary">{{ avis.book_title }}</p>
+                                <p class="review-label">Book Title</p>
+                                <p class="mb-0" style="color:#8B6F47;">{{ avis.book_title }}</p>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <strong>Auteur du livre :</strong>
-                                <p class="mb-0 text-secondary">{{ avis.author }}</p>
+                                <p class="review-label">Author</p>
+                                <p class="mb-0">{{ avis.author }}</p>
                             </div>
                         </div>
                     </div>
 
                     <hr>
 
-                    <!-- Détails de l'avis -->
-                    <h5 class="mb-3">Détails de l'avis</h5>
-                    
-                    <!-- Note -->
+                    <!-- Review Section -->
+                    <h5 class="mb-3 review-label">Review Details</h5>
+
+                    <!-- Stars -->
                     <div class="mb-3">
-                        <strong>Note :</strong>
-                        <div class="mt-1">
-                            <span class="text-warning fs-4">
-                                {% for i in "12345" %}
-                                    {% if forloop.counter <= avis.note %}
-                                        ⭐
-                                    {% else %}
-                                        ☆
-                                    {% endif %}
-                                {% endfor %}
-                            </span>
-                            <span class="badge bg-primary ms-2 fs-6">{{ avis.note }}/5</span>
+                        <p class="review-label">Rating</p>
+                        <div class="star-rating">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= avis.note %}
+                                    <span>★</span>
+                                {% else %}
+                                    <span style="opacity:0.3;">★</span>
+                                {% endif %}
+                            {% endfor %}
+                            <span class="badge bg-beige ms-2">{{ avis.note }}/5</span>
                         </div>
                     </div>
 
                     <!-- Date -->
                     <div class="mb-3">
-                        <strong>Date de publication :</strong>
+                        <p class="review-label">Publication Date</p>
                         <p class="mb-0">{{ avis.date|date:"d/m/Y" }}</p>
                     </div>
 
-                    <!-- Commentaire -->
+                    <!-- Comment -->
                     <div class="mb-3">
-                        <strong>Commentaire :</strong>
-                        <div class="p-3 bg-light rounded mt-2">
+                        <p class="review-label">Comment</p>
+                        <div class="review-section mt-2">
                             <p class="mb-0">{{ avis.commentaire|linebreaks }}</p>
                         </div>
                     </div>
+
                 </div>
 
-                <!-- Boutons d'action -->
+                <!-- Buttons -->
                 <div class="card-footer bg-white">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <a href="{% url 'modifier_avis' avis.pk %}" class="btn btn-warning">
-                                <i class="fas fa-edit"></i> Modifier cet avis
+                            <a href="{% url 'modifier_avis' avis.pk %}" class="btn btn-beige me-2">
+                                Edit Review
                             </a>
                             <a href="{% url 'supprimer_avis' avis.pk %}" class="btn btn-danger">
-                                <i class="fas fa-trash"></i> Supprimer
+                                Delete
                             </a>
                         </div>
-                        <a href="{% url 'avis_list' %}?book_id={{ avis.book_id.pk }}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Retour aux avis
+
+                        <a href="{% url 'avis_list' %}?book_id={{ avis.book_id.pk }}" 
+                           class="btn btn-secondary">
+                            Back to Reviews
                         </a>
                     </div>
                 </div>
+
             </div>
+
         </div>
     </div>
 </div>
+
 {% endblock %}

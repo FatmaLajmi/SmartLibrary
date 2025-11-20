@@ -1,17 +1,84 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container mt-4">
-    <h1>Supprimer l'avis</h1>
-    <div class="alert alert-warning">
-        <p>Êtes-vous sûr de vouloir supprimer cet avis ?</p>
-        <p><strong>Livre :</strong> {{ object.book_title }}</p>
-        <p><strong>Note :</strong> {{ object.note }}/5</p>
+
+<style>
+    .delete-card {
+        max-width: 600px;
+        margin: 50px auto;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #FAF7F2;
+        border: 1px solid #E5DDD3;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .delete-header {
+        background: #8C4F4F;
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .delete-body {
+        padding: 25px;
+    }
+
+    .info-box {
+        background: #F3EEE8;
+        border-left: 4px solid #8C4F4F;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .custom-btn-danger {
+        background-color: #8C4F4F !important;
+        border: none;
+        color: white !important;
+        padding: 10px 25px;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+
+    .custom-btn-danger:hover {
+        background-color: #C1584A !important;
+    }
+
+    .custom-btn-secondary {
+        background-color: #D6C8BC !important;
+        border: none;
+        color: #4B3F35 !important;
+        padding: 10px 25px;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="delete-card">
+
+    <!-- Header -->
+    <div class="delete-header">
+        <h2 class="mb-0">Delete Review</h2>
+        <small>Are you sure you want to delete this review?</small>
     </div>
-    
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Oui, supprimer</button>
-        <a href="{% url 'avis_list' %}?book_id={{ object.book_id.pk }}" class="btn btn-secondary">Annuler</a>
-    </form>
+
+    <!-- Body -->
+    <div class="delete-body">
+        <div class="info-box">
+            <p><strong>Book:</strong> <span class="text-primary">{{ object.book_title }}</span></p>
+            <p><strong>Rating:</strong> <span class="text-warning">{{ object.note }}/5</span></p>
+        </div>
+
+        <form method="post" class="d-flex justify-content-between">
+            {% csrf_token %}
+            <button type="submit" class="custom-btn-danger">
+                <i class="fas fa-trash"></i> Yes, Delete
+            </button>
+            <a href="{% url 'avis_list' %}?book_id={{ object.book_id.pk }}" class="custom-btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </form>
+    </div>
+
 </div>
+
 {% endblock %}
