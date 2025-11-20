@@ -1,9 +1,121 @@
-<!-- ProfileApp/templates/ProfileApp/profile_edit.html -->
-<h2>Edit Profile</h2>
+{% extends 'base.html' %}
+{% load static %}
 
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ user_form.as_p }}
-    {{ profile_form.as_p }}
-    <button type="submit">Save</button>
-</form>
+{% block title %}Modifier le profil - SmartLibrary{% endblock %}
+
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&family=Prata&display=swap" rel="stylesheet">
+
+<style>
+    body { background:#F3F2EC; font-family:'Raleway'; }
+
+    .profile-container {
+        max-width: 650px;
+        margin: 40px auto;
+        background:#fff;
+        padding:45px 40px;
+        border-radius:4px;
+        box-shadow:0 8px 30px rgba(31,38,135,0.15);
+    }
+
+    h2 {
+        font-family:'Prata', serif;
+        font-size:2.2rem;
+        text-align:center;
+        color:#2f2f2f;
+        margin-bottom:35px;
+    }
+
+    .section-title {
+        font-size:1.1rem;
+        font-weight:600;
+        margin-bottom:12px;
+        color:#2f2f2f;
+    }
+
+    .section-block {
+        background:#F9F9F9;
+        padding:20px;
+        border-radius:4px;
+        border:1px solid #E0E0E0;
+        margin-bottom:25px;
+    }
+
+    form p { display:flex; flex-direction:column; }
+
+    label { font-weight:600; color:#2f2f2f; margin-bottom:6px; }
+
+    input, select, textarea {
+        padding:12px;
+        border:1px solid #D1D1D1;
+        border-radius:4px;
+        margin-bottom:12px;
+        transition:.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        border-color:#C5A992;
+        outline:none;
+    }
+
+    .btn-save {
+        width:100%;
+        padding:15px;
+        background:#C5A992;
+        color:white;
+        font-weight:600;
+        border:none;
+        border-radius:4px;
+        transition:.3s ease;
+        margin-bottom:15px;
+    }
+
+    .btn-save:hover { background:#2f2f2f; }
+
+    .btn-cancel {
+        width:100%;
+        padding:15px;
+        background:#757575;
+        color:white;
+        border:none;
+        border-radius:4px;
+        font-weight:600;
+        transition:.3s;
+    }
+
+    .btn-cancel:hover { background:black; }
+</style>
+
+
+<div class="profile-container">
+
+    <h2>Modifier le profil</h2>
+
+    {% if user_form.errors or profile_form.errors %}
+    <div class="alert">
+        Veuillez corriger les champs incorrects.
+    </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="section-block">
+            <div class="section-title">Informations utilisateur</div>
+            {{ user_form.as_p }}
+        </div>
+
+        <div class="section-block">
+            <div class="section-title">Informations du profil</div>
+            {{ profile_form.as_p }}
+        </div>
+
+        <button class="btn-save">Enregistrer les modifications</button>
+        <a href="{% url 'profile_view' %}">
+            <button type="button" class="btn-cancel">Annuler</button>
+        </a>
+    </form>
+</div>
+
+{% endblock %}

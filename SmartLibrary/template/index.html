@@ -42,30 +42,41 @@
                             </ul>
                         </div>
                     </div>
+
+                   
+   
+        <!-- Menu Account avec dropdown -->
+       
+
                     <div class="col-md-6">
                         <div class="right-element">
                             {% if user.is_authenticated %}
                                 <a href="#" class="user-account for-buy"><i class="icon icon-user"></i><span>Welcome, {{ user.first_name }} {{ user.last_name }}</span></a>
                                 <a href="{% url 'panier_list' %}" class="cart for-buy"><i class="icon icon-clipboard"></i><span>Cart:(0 $)</span></a>
                                 <a href="{% url 'logout' %}" class="user-account for-buy"><i class="icon icon-lock"></i><span>Logout</span></a>
+								<a href="{% url 'profile_view' %}" class="user-account for-buy"><i class="icon icon-lock"></i><span>Profil</span></a>
                             {% else %}
                                 <a href="{% url 'login' %}" class="user-account for-buy"><i class="icon icon-user"></i><span>Login</span></a>
                                 <a href="{% url 'register' %}" class="user-account for-buy"><i class="icon icon-edit"></i><span>Register</span></a>
                             {% endif %}
 
-                            <div class="action-menu">
-                                <div class="search-bar">
-                                    <a href="#" class="search-button search-toggle" data-selector="#header-wrap">
-                                        <i class="icon icon-search"></i>
-                                    </a>
-                                    <form role="search" method="get" class="search-box">
-                                        <input class="search-field text search-input" placeholder="Search" type="search">
-                                    </form>
-                                </div>
-                            </div>
 
-                        </div>
-                    </div>
+        <!-- Cart -->
+       
+
+        <!-- Search -->
+        <div class="action-menu">
+            <div class="search-bar">
+                <a href="#" class="search-button search-toggle" data-selector="#header-wrap">
+                    <i class="icon icon-search"></i>
+                </a>
+                <form role="search" method="get" class="search-box">
+                    <input class="search-field text search-input" placeholder="Search" type="search">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
                 </div>
             </div>
