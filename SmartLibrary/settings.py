@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     'PanierApp',
     'PanierAppApi',
     'UserApp',       
-    'ProfileApp'
+    'ProfileApp',
+    'StockApp',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -148,8 +149,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ----------------------------
 AUTH_USER_MODEL = 'UserApp.Utilisateur'
 # Redirection après login
-LOGIN_REDIRECT_URL = '/profile/' 
-LOGOUT_REDIRECT_URL = '/accounts/login/' 
+LOGIN_REDIRECT_URL = 'index'  # page after login
+LOGIN_URL = 'login'  # redirect here when login is required
+LOGOUT_REDIRECT_URL = 'index'  # page after logout
 
 
 import os

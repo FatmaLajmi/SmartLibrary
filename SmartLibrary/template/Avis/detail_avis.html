@@ -1,11 +1,89 @@
 {% extends 'base.html' %}
-{}
+{% load static %}
 {% block content %}
-<h1>Détail avis</h1>
-<p>Livre : {{ avis.book_title }}</p>
-<p>Auteur : {{ avis.author }}</p>
-<p>Note : {{ avis.note }}</p>
-<p>Commentaire : {{ avis.commentaire }}</p>
-<p>Date : {{ avis.date }}</p>
-<a href="{% url 'modifier_avis' avis.pk %}">Modifier</a>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- En-tête -->
+            <div class="mb-4">
+                <h1 class="text-center">Détail de l'avis</h1>
+            </div>
+
+            <!-- Carte principale -->
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Informations du livre</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Informations du livre -->
+                    <div class="mb-4 p-3 bg-light rounded">
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <strong>Titre du livre :</strong>
+                                <p class="mb-0 text-primary">{{ avis.book_title }}</p>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <strong>Auteur du livre :</strong>
+                                <p class="mb-0 text-secondary">{{ avis.author }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Détails de l'avis -->
+                    <h5 class="mb-3">Détails de l'avis</h5>
+                    
+                    <!-- Note -->
+                    <div class="mb-3">
+                        <strong>Note :</strong>
+                        <div class="mt-1">
+                            <span class="text-warning fs-4">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= avis.note %}
+                                        ⭐
+                                    {% else %}
+                                        ☆
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                            <span class="badge bg-primary ms-2 fs-6">{{ avis.note }}/5</span>
+                        </div>
+                    </div>
+
+                    <!-- Date -->
+                    <div class="mb-3">
+                        <strong>Date de publication :</strong>
+                        <p class="mb-0">{{ avis.date|date:"d/m/Y" }}</p>
+                    </div>
+
+                    <!-- Commentaire -->
+                    <div class="mb-3">
+                        <strong>Commentaire :</strong>
+                        <div class="p-3 bg-light rounded mt-2">
+                            <p class="mb-0">{{ avis.commentaire|linebreaks }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boutons d'action -->
+                <div class="card-footer bg-white">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <a href="{% url 'modifier_avis' avis.pk %}" class="btn btn-warning">
+                                <i class="fas fa-edit"></i> Modifier cet avis
+                            </a>
+                            <a href="{% url 'supprimer_avis' avis.pk %}" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </a>
+                        </div>
+                        <a href="{% url 'avis_list' %}?book_id={{ avis.book_id.pk }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour aux avis
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

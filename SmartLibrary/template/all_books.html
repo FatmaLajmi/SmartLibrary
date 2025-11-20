@@ -1,0 +1,389 @@
+{% load static %}
+{% load livre_filters %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>All Books - BookSaw</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+    <!-- CSS et icônes statiques -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'icomoon/icomoon.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/vendor.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
+
+    <div id="header-wrap">
+
+        <div class="top-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="social-links">
+                            <ul>
+                                <li><a href="#"><i class="icon icon-facebook"></i></a></li>
+                                <li><a href="#"><i class="icon icon-twitter"></i></a></li>
+                                <li><a href="#"><i class="icon icon-youtube-play"></i></a></li>
+                                <li><a href="#"><i class="icon icon-behance-square"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="right-element">
+                            <a href="#" class="user-account for-buy"><i class="icon icon-user"></i><span>Account</span></a>
+                            <a href="{% url 'panier_list' %}" class="cart for-buy"><i class="icon icon-clipboard"></i><span>Cart:(0 $)</span></a>
+
+                            <div class="action-menu">
+                                <div class="search-bar">
+                                    <a href="#" class="search-button search-toggle" data-selector="#header-wrap">
+                                        <i class="icon icon-search"></i>
+                                    </a>
+                                    <form role="search" method="get" class="search-box">
+                                        <input class="search-field text search-input" placeholder="Search" type="search">
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div><!-- top-content -->
+
+        <header id="header">
+            <div class="container-fluid">
+                <div class="row">
+
+                    <div class="col-md-2">
+                        <div class="main-logo">
+                            <a href="{% url 'index' %}"><img src="{% static 'images/main-logo.png' %}" alt="logo"></a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-10">
+
+                        <nav id="navbar">
+                            <div class="main-menu stellarnav">
+                                <ul class="menu-list">
+                                    <li class="menu-item"><a href="{% url 'index' %}">Home</a></li>
+                                    <li class="menu-item has-sub">
+                                        <a href="#pages" class="nav-link">Pages</a>
+                                        <ul>
+                                            <li><a href="{% url 'index' %}">Home</a></li>
+                                            <li><a href="{% url 'index' %}">About</a></li>
+                                            <li><a href="{% url 'index' %}">Styles</a></li>
+                                            <li><a href="{% url 'index' %}">Blog</a></li>
+                                            <li><a href="{% url 'index' %}">Post Single</a></li>
+                                            <li class="active"><a href="{% url 'all_books' %}">Our Store</a></li>
+                                            <li><a href="{% url 'index' %}">Product Single</a></li>
+                                            <li><a href="{% url 'index' %}">Contact</a></li>
+                                            <li><a href="{% url 'index' %}">Thank You</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="menu-item"><a href="{% url 'index' %}#featured-books" class="nav-link">Featured</a></li>
+                                    <li class="menu-item"><a href="{% url 'index' %}#popular-books" class="nav-link">Popular</a></li>
+                                    <li class="menu-item active"><a href="{% url 'all_books' %}" class="nav-link">All Books</a></li>
+                                </ul>
+
+                                <div class="hamburger">
+                                    <span class="bar"></span>
+                                    <span class="bar"></span>
+                                    <span class="bar"></span>
+                                </div>
+
+                            </div>
+                        </nav>
+
+                    </div>
+
+                </div>
+            </div>
+        </header>
+
+    </div><!-- header-wrap -->
+
+    <!-- Page Header -->
+    <section class="py-5" style="background: linear-gradient(to bottom, #f9f3e9 0%, #ffffff 100%);">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="section-header align-center">
+                        <h1 class="section-title">
+                            {% if selected_genre %}
+                                {{ selected_genre }} Books
+                            {% else %}
+                                All Books
+                            {% endif %}
+                        </h1>
+                        <p class="text-muted">Showing {{ total_books }} book{{ total_books|pluralize }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Genre Filter Section -->
+    <section class="py-3 border-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="d-flex flex-wrap gap-2 justify-content-center align-items-center">
+                        <span class="fw-bold me-2">Filter by Genre:</span>
+                        <a href="{% url 'all_books' %}" class="btn btn-sm {% if not genre_filter %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                            All Books
+                        </a>
+                        {% for genre_key, genre_name in genre_list %}
+                        <a href="{% url 'all_books' %}?genre={{ genre_key }}" 
+                           class="btn btn-sm {% if genre_filter == genre_key %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                            {{ genre_name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- All Books Grid Section -->
+    <section id="all-books-section" class="py-5 my-5">
+        <div class="container">
+            <div class="row">
+                {% if books %}
+                    {% for book in books %}
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                        <div class="product-item">
+                            <figure class="product-style">
+                                {% if book.image_blob %}
+                                    <img src="data:image/jpeg;base64,{{ book.image_blob|b64encode }}" 
+                                         alt="{{ book.title }}" 
+                                         class="product-item"
+                                         style="width: 100%; height: 350px; object-fit: cover;">
+                                {% else %}
+                                    <img src="{% static 'images/product-item1.jpg' %}" 
+                                         alt="{{ book.title }}" 
+                                         class="product-item"
+                                         style="width: 100%; height: 350px; object-fit: cover;">
+                                {% endif %}
+                                <form action="{% url 'ajouter_au_panier' book.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="add-to-cart" style="background-color: rgba(150,120,90,0.85);">Add to cart</button>
+                                </form>
+                            </figure>
+                            <figcaption>
+                                <h3 title="{{ book.title }}">{{ book.title|truncatechars:50 }}</h3>
+                                <span>{{ book.author }}</span>
+                                {% if book.genre %}
+                                <div class="text-muted small">
+                                    <i class="icon icon-tag"></i> {{ book.get_genre_display }}
+                                </div>
+                                {% endif %}
+                                <div class="item-price">${{ book.price|floatformat:2 }}</div>
+                                <div class="book-actions">
+                                    <a href="" class="btn-small btn-rate">Add a Rate</a>
+                                </div>
+                            </figcaption>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-md-12">
+                        <div class="alert alert-info text-center" role="alert">
+                            <h4>No books found</h4>
+                            <p>{% if selected_genre %}No books available in this genre at the moment.{% else %}No books available at the moment.{% endif %}</p>
+                            <a href="{% url 'index' %}" class="btn btn-primary mt-3">Go to Homepage</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?{% if genre_filter %}genre={{ genre_filter }}&{% endif %}page=1" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?{% if genre_filter %}genre={{ genre_filter }}&{% endif %}page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">&laquo;&laquo;</span>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link">&laquo;</span>
+                            </li>
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ num }}</span>
+                                </li>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?{% if genre_filter %}genre={{ genre_filter }}&{% endif %}page={{ num }}">{{ num }}</a>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?{% if genre_filter %}genre={{ genre_filter }}&{% endif %}page={{ page_obj.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?{% if genre_filter %}genre={{ genre_filter }}&{% endif %}page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">&raquo;</span>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link">&raquo;&raquo;</span>
+                            </li>
+                            {% endif %}
+
+                        </ul>
+                    </nav>
+                    
+                    <div class="text-center text-muted mt-3">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-4">
+                    <div class="footer-item">
+                        <div class="company-brand">
+                            <img src="{% static 'images/main-logo.png' %}" alt="logo" class="footer-logo">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sagittis sed ptibus liberolectus
+                                nonet psryroin. Amet sed lorem posuere sit iaculis amet, ac urna. Adipiscing fames
+                                semper erat ac in suspendisse iaculis.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="footer-menu">
+                        <h5>About Us</h5>
+                        <ul class="menu-list">
+                            <li class="menu-item"><a href="#">vision</a></li>
+                            <li class="menu-item"><a href="#">articles </a></li>
+                            <li class="menu-item"><a href="#">careers</a></li>
+                            <li class="menu-item"><a href="#">service terms</a></li>
+                            <li class="menu-item"><a href="#">donate</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="footer-menu">
+                        <h5>Discover</h5>
+                        <ul class="menu-list">
+                            <li class="menu-item"><a href="{% url 'index' %}">Home</a></li>
+                            <li class="menu-item"><a href="{% url 'all_books' %}">Books</a></li>
+                            <li class="menu-item"><a href="#">Authors</a></li>
+                            <li class="menu-item"><a href="#">Subjects</a></li>
+                            <li class="menu-item"><a href="#">Advanced Search</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="footer-menu">
+                        <h5>My account</h5>
+                        <ul class="menu-list">
+                            <li class="menu-item"><a href="#">Sign In</a></li>
+                            <li class="menu-item"><a href="{% url 'panier_list' %}">View Cart</a></li>
+                            <li class="menu-item"><a href="#">My Wishtlist</a></li>
+                            <li class="menu-item"><a href="#">Track My Order</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="footer-menu">
+                        <h5>Help</h5>
+                        <ul class="menu-list">
+                            <li class="menu-item"><a href="#">Help center</a></li>
+                            <li class="menu-item"><a href="#">Report a problem</a></li>
+                            <li class="menu-item"><a href="#">Suggesting edits</a></li>
+                            <li class="menu-item"><a href="#">Contact us</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <div id="footer-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="copyright">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p>© 2022 All rights reserved. Free HTML Template by <a
+                                        href="https://www.templatesjungle.com/" target="_blank">TemplatesJungle</a></p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="social-links align-right">
+                                    <ul>
+                                        <li><a href="#"><i class="icon icon-facebook"></i></a></li>
+                                        <li><a href="#"><i class="icon icon-twitter"></i></a></li>
+                                        <li><a href="#"><i class="icon icon-youtube-play"></i></a></li>
+                                        <li><a href="#"><i class="icon icon-behance-square"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+            crossorigin="anonymous"></script>
+    <script src="{% static 'js/plugins.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+
+</body>
+
+</html>
