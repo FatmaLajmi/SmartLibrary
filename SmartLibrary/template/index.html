@@ -224,22 +224,34 @@
 
                 <div class="product-list" data-aos="fade-up">
                     <div class="row">
+
                         {% for book in featured_books %}
                         <div class="col-md-3">
                             <div class="product-item">
+
                                 <figure class="product-style">
                                     {% if book.image_blob %}
                                         <img src="data:image/jpeg;base64,{{ book.image_blob|b64encode }}" alt="{{ book.title }}" class="product-item">
                                     {% else %}
                                         <img src="{% static 'images/product-item1.jpg' %}" alt="{{ book.title }}" class="product-item">
                                     {% endif %}
-                                    <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
+									<form action="{% url 'ajouter_au_panier' book.id %}" method="POST">
+										{% csrf_token %}
+										<button type="submit" class="add-to-cart" style="background-color: rgba(150,120,90,0.85);">Add to cart</button>
+									</form>
                                 </figure>
+
                                 <figcaption>
-                                    <h3>{{ book.title|truncatewords:5 }}</h3>
-                                    <span>{{ book.author }}</span>
-                                    <div class="item-price">${{ book.price|floatformat:2 }}</div>
-                                </figcaption>
+									<h3>{{ book.title|truncatewords:5 }}</h3>
+									<span>{{ book.author }}</span>
+									<div class="item-price">${{ book.price|floatformat:2 }}</div>
+
+									<div class="book-actions">
+										<a href="" class="btn-small btn-rate">Add a Rate</a>
+									</div>
+								</figcaption>
+
+
                             </div>
                         </div>
                         {% empty %}
@@ -257,12 +269,16 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="btn-wrap align-right">
-                    <a href="{% url 'all_books' %}" class="btn-accent-arrow">View all products <i class="icon icon-ns-arrow-right"></i></a>
+                    <a href="{% url 'all_books' %}" class="btn-accent-arrow">View all products 
+                        <i class="icon icon-ns-arrow-right"></i>
+                    </a>
                 </div>
             </div>
         </div>
+
     </div>
 </section>
+
 
 <section id="best-selling" class="leaf-pattern-overlay">
     <div class="corner-pattern-overlay"></div>
@@ -341,12 +357,18 @@
                                         {% else %}
                                             <img src="{% static 'images/tab-item1.jpg' %}" alt="{{ book.title }}" class="product-item">
                                         {% endif %}
-                                        <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
+                                        <form action="{% url 'ajouter_au_panier' book.id %}" method="POST">
+											{% csrf_token %}
+											<button type="submit" class="add-to-cart" style="background-color: rgba(150,120,90,0.85);">Add to cart</button>
+										</form>
                                     </figure>
                                     <figcaption>
                                         <h3>{{ book.title|truncatewords:4 }}</h3>
                                         <span>{{ book.author }}</span>
                                         <div class="item-price">${{ book.price|floatformat:2 }}</div>
+										<div class="book-actions">
+											<a href="" class="btn-small btn-rate">Add a Rate</a>
+										</div>
                                     </figcaption>
                                 </div>
                             </div>
@@ -363,12 +385,18 @@
                                         {% else %}
                                             <img src="{% static 'images/tab-item5.jpg' %}" alt="{{ book.title }}" class="product-item">
                                         {% endif %}
-                                        <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
+                                        <form action="{% url 'ajouter_au_panier' book.id %}" method="POST">
+											{% csrf_token %}
+											<button type="submit" class="add-to-cart" style="background-color: rgba(150,120,90,0.85);">Add to cart</button>
+										</form>
                                     </figure>
                                     <figcaption>
                                         <h3>{{ book.title|truncatewords:4 }}</h3>
                                         <span>{{ book.author }}</span>
                                         <div class="item-price">${{ book.price|floatformat:2 }}</div>
+										<div class="book-actions">
+											<a href="" class="btn-small btn-rate">Add a Rate</a>
+										</div>
                                     </figcaption>
                                 </div>
                             </div>
@@ -392,12 +420,18 @@
                                         {% else %}
                                             <img src="{% static 'images/tab-item1.jpg' %}" alt="{{ book.title }}" class="product-item">
                                         {% endif %}
-                                        <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
+                                        <form action="{% url 'ajouter_au_panier' book.id %}" method="POST">
+											{% csrf_token %}
+											<button type="submit" class="add-to-cart" style="background-color: rgba(150,120,90,0.85);">Add to cart</button>
+										</form>
                                     </figure>
                                     <figcaption>
                                         <h3>{{ book.title|truncatewords:4 }}</h3>
                                         <span>{{ book.author }}</span>
                                         <div class="item-price">${{ book.price|floatformat:2 }}</div>
+										<div class="book-actions">
+											<a href="" class="btn-small btn-rate">Add a Rate</a>
+										</div>
                                     </figcaption>
                                 </div>
                             </div>
@@ -415,12 +449,18 @@
                                         {% else %}
                                             <img src="{% static 'images/tab-item5.jpg' %}" alt="{{ book.title }}" class="product-item">
                                         {% endif %}
-                                        <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
+                                        <form action="{% url 'ajouter_au_panier' book.id %}" method="POST">
+											{% csrf_token %}
+											<button type="submit" class="add-to-cart" style="background-color: rgba(150,120,90,0.85);">Add to cart</button>
+										</form>
                                     </figure>
                                     <figcaption>
                                         <h3>{{ book.title|truncatewords:4 }}</h3>
                                         <span>{{ book.author }}</span>
                                         <div class="item-price">${{ book.price|floatformat:2 }}</div>
+										<div class="book-actions">
+											<a href="" class="btn-small btn-rate">Add a Rate</a>
+										</div>
                                     </figcaption>
                                 </div>
                             </div>
@@ -895,6 +935,8 @@
 			</div>
 		</div>
 	</div>
+
+
 
 	<script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"

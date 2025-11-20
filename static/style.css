@@ -2396,6 +2396,7 @@ footer#footer {
   transition: 0.3s ease-out;
 }
 
+
 .product-style:hover button.add-to-cart {
   bottom: 380px;
   bottom: 0;
@@ -2519,5 +2520,3 @@ footer#footer {
     color: #555;
     margin-bottom: 20px;
 }
-
-
