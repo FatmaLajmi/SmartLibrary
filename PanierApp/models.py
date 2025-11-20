@@ -1,11 +1,11 @@
 from django.db import models
 from LivreApp.models import Livre
-#from django.contrib.auth.models import User
+from UserApp.models import Utilisateur
+
 
 class Panier(models.Model):
-    """ 
-    utilisateur = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
-    """
+
+    user = models.ForeignKey(Utilisateur, null=True, blank=True, on_delete=models.CASCADE)
     livre = models.ForeignKey(Livre, on_delete=models.CASCADE)
     titre = models.CharField(max_length=200)
     quantite = models.PositiveIntegerField(default=1)
