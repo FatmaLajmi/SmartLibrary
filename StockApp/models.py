@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from LivreApp.models import Livre
+from django.db.models.signals import post_save, pre_save  # Added pre_save
 
 
 class Stock(models.Model):
@@ -135,5 +136,45 @@ def create_stock_for_livre(sender, instance, created, **kwargs):
     if created:
         Stock.objects.create(
             book=instance,
-            quantity=instance.quantite if hasattr(instance, 'quantite') else 0
+            quantity=instance.quantity if hasattr(instance, 'quantity') else 0
         )
+        
+        
+        
+@receiver(post_save, sender=Livre)
+def sync_livre_quantity_to_stock(sender, instance, created, **kwargs):
+    """
+    When Livre.quantity is modified, update Stock.quantity
+    This runs AFTER a Livre is saved
+    """
+    if not created:  # Only for updates, not creation (handled by create_stock_for_livre)
+        try:
+            stock = instance.stock
+            # Only update if quantities differ (to avoid infinite loops)
+            if stock.quantity != instance.quantity:
+                stock.quantity = instance.quantity
+                stock.save()
+        except Stock.DoesNotExist:
+            # If somehow stock doesn't exist, create it
+            Stock.objects.create(book=instance, quantity=instance.quantity)
+
+
+@receiver(pre_save, sender=Stock)
+def sync_stock_quantity_to_livre(sender, instance, **kwargs):
+    """
+    When Stock.quantity is modified, update Livre.quantity
+    This runs BEFORE a Stock is saved
+    """
+    try:
+        # Get the current stock from database (before save)
+        if instance.pk:
+            old_stock = Stock.objects.get(pk=instance.pk)
+            # If quantity changed, update the book
+            if old_stock.quantity != instance.quantity:
+                livre = instance.book
+                livre.quantity = instance.quantity
+                # Use update() to avoid triggering save signal and creating loop
+                Livre.objects.filter(pk=livre.pk).update(quantity=instance.quantity)
+    except Stock.DoesNotExist:
+        # New stock being created, sync from book
+        pass
