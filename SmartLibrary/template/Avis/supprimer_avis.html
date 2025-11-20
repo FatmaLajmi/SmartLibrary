@@ -1,10 +1,17 @@
-{% extends 'Avis/base.html' %}
+{% extends 'base.html' %}
 {% block content %}
-<h1>Supprimer avis</h1>
-<p>Voulez-vous supprimer l'avis: "{{ object }}" ?</p>
-<form method="post">{% csrf_token %}
-  <button type="submit">Oui, supprimer</button>
-  <a href="{% url 'avis_list' %}">Annuler</a>
-</form>
+<div class="container mt-4">
+    <h1>Supprimer l'avis</h1>
+    <div class="alert alert-warning">
+        <p>Êtes-vous sûr de vouloir supprimer cet avis ?</p>
+        <p><strong>Livre :</strong> {{ object.book_title }}</p>
+        <p><strong>Note :</strong> {{ object.note }}/5</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+        <a href="{% url 'avis_list' %}?book_id={{ object.book_id.pk }}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
 {% endblock %}
-

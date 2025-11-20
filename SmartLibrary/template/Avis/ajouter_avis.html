@@ -1,8 +1,83 @@
-{% extends 'Avis/base.html' %}
+{% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<h1>Ajouter un avis</h1>
-<form method="post">{% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Ajouter</button>
-</form>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-4">Add A rate</h2>
+
+            <!-- Informations du livre (read-only) -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">book informations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <strong>book title</strong>
+                            <p class="text-primary mb-0">{{ livre.title }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>book author</strong>
+                            <p class="text-secondary mb-0">{{ livre.author }}</p>
+                        </div>
+                    </div>
+                    {% if livre.description %}
+                    <div class="mt-2">
+                        <strong>Description :</strong>
+                        <p class="text-muted mb-0">{{ livre.description|truncatewords:50 }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Formulaire d'ajout d'avis -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Votre avis</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Note -->
+                        <div class="mb-3">
+                            <label for="{{ form.note.id_for_label }}" class="form-label">
+                                <strong>Note :</strong> <span class="text-danger">*</span>
+                            </label>
+                            {{ form.note }}
+                            {% if form.note.errors %}
+                                <div class="text-danger mt-1">{{ form.note.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">Donnez une note entre 0 et 5</small>
+                        </div>
+
+                        <!-- Commentaire -->
+                        <div class="mb-3">
+                            <label for="{{ form.commentaire.id_for_label }}" class="form-label">
+                                <strong>Commentaire :</strong>
+                            </label>
+                            {{ form.commentaire }}
+                            {% if form.commentaire.errors %}
+                                <div class="text-danger mt-1">{{ form.commentaire.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">Share your opinion</small>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-primary btn-lg" type="submit">
+                                <i class="fas fa-check"></i> Confirm
+                            </button>
+                            <a href="{% url 'index' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

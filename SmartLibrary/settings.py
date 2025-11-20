@@ -160,6 +160,5 @@ from pathlib import Path
 # BASE_DIR est déjà défini comme ceci dans Django 5+ :
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Fichiers médias
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+
+    

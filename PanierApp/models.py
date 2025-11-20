@@ -9,7 +9,7 @@ class Panier(models.Model):
     livre = models.ForeignKey(Livre, on_delete=models.CASCADE)
     titre = models.CharField(max_length=200)
     quantite = models.PositiveIntegerField(default=1)
-    prix = models.DecimalField(max_digits=6, decimal_places=2)
+    prix = models.DecimalField(max_digits=20, decimal_places=2)
 
     @property
     def prix_total(self):

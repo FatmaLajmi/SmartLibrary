@@ -1,12 +1,24 @@
 from django.db import models
+from LivreApp.models import Livre
 
 class Avis(models.Model):
-    # id automatique (id) fourni par Django
-    note = models.IntegerField()  # 0-5 (contrainte possible)
+    book_id = models.ForeignKey(Livre, on_delete=models.CASCADE, related_name='avis')
+    note = models.IntegerField()  # 0-5
     commentaire = models.TextField(blank=True)
-    date = models.DateField(auto_now_add=True)  # date de création par défaut
-    author = models.CharField(max_length=150, default="Inconnu")  # pour tester: le nom de l'user (remplacer plus tard par FK User)
-    book_title = models.CharField(max_length=255, default="Inconnu")  # pour tester: titre du livre (remplacer par FK Book)
+    date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.book_title} - {self.author} - {self.note}"
+        return f"{self.book_id.title} - {self.note}/5"
+    
+    @property
+    def book_title(self):
+        return self.book_id.title
+    
+    @property
+    def author(self):
+        return self.book_id.author
+
+    class Meta:
+        verbose_name = "Avis"
+        verbose_name_plural = "Avis"
+        ordering = ['-date']
