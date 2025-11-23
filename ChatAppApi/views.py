@@ -1,20 +1,53 @@
-from django.shortcuts import render
-
-# Create your views here.
 # ChatAppApi/views.py
 import json
+import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
+
 from LivreApp.models import Livre
 from AvisApp.utils import get_recommended_books_for_user
+
+from google import genai
+
+
+# Create Gemini client using API key from environment variable
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+
+if not GEMINI_API_KEY:
+    # Optionnel : tu peux juste logguer ça en prod
+    raise RuntimeError(
+        "GEMINI_API_KEY environment variable is not set. "
+        "Please set it before running the server."
+    )
+
+client = genai.Client(api_key=GEMINI_API_KEY)
+
+
+def call_gemini(prompt: str) -> str:
+    """
+    Call Gemini 2.5 Flash with a text prompt and return the response text.
+    """
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+        )
+        # response.text contient le texte concaténé de la réponse
+        return (response.text or "").strip()
+    except Exception as e:
+        # En prod : logger l'erreur
+        return f"Sorry, I had an issue contacting the AI service: {e}"
 
 
 @csrf_exempt
 def chatbot_api(request):
     """
-    Very simple JSON API for the SmartLibrary chatbot.
-    It reads a user message and returns a text reply.
+    JSON API for SmartLibrary chatbot using Gemini 2.5 Flash.
+    The frontend (chat.html) sends a user message, we:
+      - enrich it with context (recommendations / search results)
+      - send a single prompt to Gemini
+      - return the AI's answer as 'reply' in JSON
     """
     if request.method != 'POST':
         return JsonResponse({'error': 'Only POST method is allowed.'}, status=405)
@@ -33,46 +66,60 @@ def chatbot_api(request):
     user = request.user if request.user.is_authenticated else None
     lower = message.lower()
 
-    # 1) Recommendations
-    if ('recommend' in lower) or ('suggest' in lower) or ('advice' in lower) or ('advise' in lower):
-        books = get_recommended_books_for_user(user, limit=5)
-        if not books:
-            reply = (
-                "I don’t have enough information yet to recommend books.\n"
-                "Try rating a few books first, and I’ll be able to give you better suggestions 😉"
-            )
+    # --------- 1) Optional: get recommendations if user asks for them ----------
+    recommended_books = None
+    if "recommend" in lower or "suggest" in lower or "advice" in lower or "advise" in lower:
+        recommended_books = list(get_recommended_books_for_user(user, limit=5))
+
+    # --------- 2) Optional: search books if user types "search ..." ----------
+    search_results = None
+    search_query = None
+    if lower.startswith("search "):
+        search_query = message.split(" ", 1)[1]
+        search_results = list(
+            Livre.objects.filter(
+                Q(title__icontains=search_query) |
+                Q(author__icontains=search_query) |
+                Q(description__icontains=search_query),
+                available=True
+            )[:5]
+        )
+
+    # --------- 3) Build a rich prompt for Gemini ----------
+    context_lines = [
+        "You are SmartLibrary, a helpful virtual librarian for an online bookstore / library.",
+        "Always answer in clear, friendly English.",
+        "",
+        f"User message: {message}",
+        "",
+    ]
+
+    if recommended_books:
+        context_lines.append("Based on this user's history, here are some recommended books:")
+        for b in recommended_books:
+            context_lines.append(f"- {b.title} — {b.author}")
+        context_lines.append("")
+
+    if search_results is not None:
+        # user explicitly did a search
+        context_lines.append(f"The user searched for: {search_query}")
+        if search_results:
+            context_lines.append("Here are books in the catalog matching this search:")
+            for b in search_results:
+                context_lines.append(f"- {b.title} — {b.author}")
         else:
-            lines = [f"- {b.title} — {b.author}" for b in books]
-            intro = "Here are some books I recommend for you:\n" if user else \
-                    "Here are some popular books:\n"
-            reply = intro + "\n".join(lines)
-        return JsonResponse({'reply': reply})
+            context_lines.append("No books were found in the catalog for this search.")
+        context_lines.append("")
 
-    # 2) Search: "search <keyword>"
-    if lower.startswith('search '):
-        query = message.split(' ', 1)[1]
-        books = Livre.objects.filter(
-            Q(title__icontains=query) |
-            Q(author__icontains=query) |
-            Q(description__icontains=query),
-            available=True
-        )[:5]
-
-        if not books:
-            reply = f"I couldn’t find any book for “{query}”."
-        else:
-            lines = [f"- {b.title} — {b.author}" for b in books]
-            reply = f"Here is what I found for “{query}”:\n" + "\n".join(lines)
-        return JsonResponse({'reply': reply})
-
-    # 3) Help / default answer
-    help_text = (
-        "I can help you with:\n"
-        "- Recommending books → type: “recommend some books”\n"
-        "- Searching a book → type: “search Harry Potter”\n"
+    context_lines.append(
+        "Use the information above to answer the user naturally. "
+        "If you suggest specific books, try to pick from the list I provided when possible. "
+        "Keep the answer reasonably short and focused on books or the library context."
     )
-    reply = (
-        "Thanks for your message! I am still a simple chatbot for now 🤖.\n\n"
-        + help_text
-    )
-    return JsonResponse({'reply': reply})
+
+    full_prompt = "\n".join(context_lines)
+
+    # --------- 4) Call Gemini and return the answer ----------
+    ai_reply = call_gemini(full_prompt)
+
+    return JsonResponse({'reply': ai_reply})
