@@ -112,7 +112,7 @@
                                             <li><a href="{% url 'index' %}">Thank You</a></li>
                                         </ul>
                                     </li>
-									 
+									<li class="menu-item"><a href="{% url 'chat' %}" class="nav-link">Chatbot</a></li>
                                     <li class="menu-item"><a href="#featured-books" class="nav-link">Featured</a></li>
                                     <li class="menu-item"><a href="#popular-books" class="nav-link">Popular</a></li>
                                     <li class="menu-item"><a href="#special-offer" class="nav-link">Offer</a></li>
@@ -295,7 +295,93 @@
 
     </div>
 </section>
+{% if recommended_books %}
+<section id="recommended-books" class="py-5 my-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
 
+                <div class="section-header align-center">
+                    <div class="title">
+                        {% if user.is_authenticated %}
+                            <span>Based on your reviews</span>
+                        {% else %}
+                            <span>Top rated by readers</span>
+                        {% endif %}
+                    </div>
+                    <h2 class="section-title">
+                        {% if user.is_authenticated %}
+                            Recommended for you
+                        {% else %}
+                            Most loved books
+                        {% endif %}
+                    </h2>
+                </div>
+
+                <div class="product-list" data-aos="fade-up">
+                    <div class="row">
+
+                        {% for book in recommended_books %}
+                        <div class="col-md-3">
+                            <div class="product-item">
+                                <figure class="product-style">
+
+                                    {% if book.image_blob %}
+                                        <img src="data:image/jpeg;base64,{{ book.image_blob|b64encode }}"
+                                             alt="{{ book.title }}" class="product-item">
+                                    {% else %}
+                                        <img src="{% static 'images/product-item3.jpg' %}"
+                                             alt="{{ book.title }}" class="product-item">
+                                    {% endif %}
+
+                                    <form action="{% url 'ajouter_au_panier' book.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" class="add-to-cart"
+                                                style="background-color: rgba(150,120,90,0.85);">
+                                            Add to cart
+                                        </button>
+                                    </form>
+                                </figure>
+
+                                <figcaption>
+                                    <h3>{{ book.title|truncatewords:5 }}</h3>
+                                    <span>{{ book.author }}</span>
+
+                                    <!-- Prix -->
+                                    {% if book.price %}
+                                        <div class="item-price">${{ book.price|floatformat:2 }}</div>
+                                    {% endif %}
+
+                                    <!-- ⭐ Note moyenne -->
+                                    <div class="mt-1">
+                                        <small>
+                                            ⭐ {{ book.average_rating|floatformat:1 }}/5
+                                            ({{ book.reviews_count }} review{{ book.reviews_count|pluralize }})
+                                        </small>
+                                    </div>
+
+                                    <!-- Actions avis -->
+                                    <div class="book-actions mt-2">
+                                        <a href="{% url 'ajouter_avis' book.pk %}" class="btn-small btn-rate">
+                                            Add a Rate
+                                        </a>
+                                        <a href="{% url 'avis_list' %}?book_id={{ book.pk }}" class="btn-small btn-rate">
+                                            All Rates
+                                        </a>
+                                    </div>
+                                </figcaption>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div><!--row-->
+                </div><!--product-list-->
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
 
 <section id="best-selling" class="leaf-pattern-overlay">
     <div class="corner-pattern-overlay"></div>
