@@ -122,22 +122,24 @@
 
                 <!-- Buttons -->
                 <div class="card-footer bg-white">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <a href="{% url 'modifier_avis' avis.pk %}" class="btn btn-beige me-2">
-                                Edit Review
-                            </a>
-                            <a href="{% url 'supprimer_avis' avis.pk %}" class="btn btn-danger">
-                                Delete
-                            </a>
-                        </div>
+    <div class="d-flex justify-content-between">
+        <div>
+            {% if request.user.is_authenticated and avis.user_id == request.user.id %}
+                <a href="{% url 'modifier_avis' avis.pk %}" class="btn btn-beige me-2">
+                    Edit Review
+                </a>
+                <a href="{% url 'supprimer_avis' avis.pk %}" class="btn btn-danger">
+                    Delete
+                </a>
+            {% endif %}
+        </div>
 
-                        <a href="{% url 'avis_list' %}?book_id={{ avis.book_id.pk }}" 
-                           class="btn btn-secondary">
-                            Back to Reviews
-                        </a>
-                    </div>
-                </div>
+        <a href="{% url 'avis_list' %}?book_id={{ avis.book_id.pk }}" 
+           class="btn btn-secondary">
+            Back to Reviews
+        </a>
+    </div>
+</div>
 
             </div>
 

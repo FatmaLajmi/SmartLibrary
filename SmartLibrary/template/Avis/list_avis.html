@@ -10,9 +10,31 @@
             <a href="{% url 'index' %}" class="btn text-white" style="background:#A1785C;">
                 <i class="fas fa-home"></i> Back to Home
             </a>
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'mes_avis' %}" class="btn btn-outline-dark">
+                <i class="fas fa-user"></i> My Reviews
+            </a>
+            {% endif %}
         </div>
     </div>
-
+{% if livre %}
+    <!-- ⭐ Bloc moyenne -->
+    <div class="card mb-4 shadow-sm border-0" style="background:#FFF7EF;">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-1">Average rating</h5>
+                {% if nb_avis %}
+                    <p class="mb-0">
+                        <strong>{{ avg_note|floatformat:1 }}/5</strong>
+                        <small class="text-muted">based on {{ nb_avis }} review{{ nb_avis|pluralize }}</small>
+                    </p>
+                {% else %}
+                    <p class="mb-0 text-muted">No reviews yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="fw-bold">
@@ -27,32 +49,48 @@
     <!-- Sorting Card -->
     <div class="card shadow-sm mb-4 border-0" style="background:#F5F2ED;">
         <div class="card-body">
-            <form method="get" class="d-flex align-items-center">
+            <form method="get" class="row g-2 align-items-center">
                 {% if request.GET.book_id %}
-                <input type="hidden" name="book_id" value="{{ request.GET.book_id }}">
+                    <input type="hidden" name="book_id" value="{{ request.GET.book_id }}">
                 {% endif %}
 
-                <label class="me-2 mb-0 fw-semibold text-dark">Sort by:</label>
-                <select name="order" onchange="this.form.submit()" 
-                        class="form-select w-auto border-0 shadow-sm" 
-                        style="background:#E8DFD3;">
-                    <option value="-date" {% if request.GET.order == '-date' or not request.GET.order %}selected{% endif %}>
-                        Date (newest)
-                    </option>
-                    <option value="date" {% if request.GET.order == 'date' %}selected{% endif %}>
-                        Date (oldest)
-                    </option>
-                    <option value="-note" {% if request.GET.order == '-note' %}selected{% endif %}>
-                        Rating (highest)
-                    </option>
-                    <option value="note" {% if request.GET.order == 'note' %}selected{% endif %}>
-                        Rating (lowest)
-                    </option>
-                </select>
+                <div class="col-md-4 d-flex align-items-center">
+                    <label class="me-2 mb-0 fw-semibold text-dark">Sort by:</label>
+                    <select name="order" onchange="this.form.submit()" 
+                            class="form-select w-auto border-0 shadow-sm" 
+                            style="background:#E8DFD3;">
+                        <option value="-date" {% if request.GET.order == '-date' or not request.GET.order %}selected{% endif %}>
+                            Date (newest)
+                        </option>
+                        <option value="date" {% if request.GET.order == 'date' %}selected{% endif %}>
+                            Date (oldest)
+                        </option>
+                        <option value="-note" {% if request.GET.order == '-note' %}selected{% endif %}>
+                            Rating (highest)
+                        </option>
+                        <option value="note" {% if request.GET.order == 'note' %}selected{% endif %}>
+                            Rating (lowest)
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control border-0 shadow-sm"
+                               style="background:#FFFDF9;"
+                               placeholder="Search by book title, author or comment..."
+                               value="{{ search_query }}">
+                        {% if request.GET.order %}
+                            <input type="hidden" name="order" value="{{ request.GET.order }}">
+                        {% endif %}
+                        <button class="btn text-white" type="submit" style="background:#A1785C;">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
-
     <!-- Reviews List -->
     {% if avis_list %}
         {% for avis in avis_list %}
@@ -89,17 +127,20 @@
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="col-md-3 text-end d-flex flex-column justify-content-center">
-                        <a href="{% url 'detail_avis' avis.pk %}" class="btn btn-sm text-white mb-2" style="background:#A1785C;">
-                            <i class="fas fa-eye"></i> View Details
-                        </a>
-                        <a href="{% url 'modifier_avis' avis.pk %}" class="btn btn-sm text-white mb-2" style="background:#C49A6C;">
-                            <i class="fas fa-edit"></i> Edit
-                        </a>
-                        <a href="{% url 'supprimer_avis' avis.pk %}" class="btn btn-sm text-white" style="background:#8C4F4F;">
-                            <i class="fas fa-trash"></i> Delete
-                        </a>
-                    </div>
+<div class="col-md-3 text-end d-flex flex-column justify-content-center">
+    <a href="{% url 'detail_avis' avis.pk %}" class="btn btn-sm text-white mb-2" style="background:#A1785C;">
+        <i class="fas fa-eye"></i> View Details
+    </a>
+
+    {% if request.user.is_authenticated and avis.user_id == request.user.id %}
+        <a href="{% url 'modifier_avis' avis.pk %}" class="btn btn-sm text-white mb-2" style="background:#C49A6C;">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+        <a href="{% url 'supprimer_avis' avis.pk %}" class="btn btn-sm text-white" style="background:#8C4F4F;">
+            <i class="fas fa-trash"></i> Delete
+        </a>
+    {% endif %}
+</div>
                 </div>
             </div>
         </div>
