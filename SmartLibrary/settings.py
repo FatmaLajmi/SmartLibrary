@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from decouple import config
 
 # ----------------------------
 #   BASE DIR
@@ -152,6 +153,25 @@ AUTH_USER_MODEL = 'UserApp.Utilisateur'
 LOGIN_REDIRECT_URL = 'index'  # page after login
 LOGIN_URL = 'login'  # redirect here when login is required
 LOGOUT_REDIRECT_URL = 'index'  # page after logout
+
+# ----------------------------
+#   EMAIL CONFIGURATION
+# ----------------------------
+# Backend pour le développement (affiche les emails en console)
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Configuration pour Gmail (production)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = f'SmartLibrary <{config("EMAIL_HOST_USER")}>'
+SERVER_EMAIL = config('EMAIL_HOST_USER')
+
+# Password reset timeout (1 jour = 86400 secondes)
+PASSWORD_RESET_TIMEOUT = 86400
 
 
 import os
