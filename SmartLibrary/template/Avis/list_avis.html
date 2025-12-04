@@ -1,139 +1,154 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+
 <div class="container mt-5">
-    <div class="row">
-        <div class="col-md-12">
-            <!-- En-tête -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="mb-0">
-                    {% if livre %}
-                        Avis pour le livre "{{ livre.title }}"
-                    {% else %}
-                        Tous les avis
-                    {% endif %}
-                </h1>
-            </div>
 
-            <!-- Informations du livre si filtré -->
-            {% if livre %}
-            {% endif %}
-
-            <!-- Tri -->
-            <div class="card mb-4">
-                <div class="card-body">
-                    <form method="get" class="d-flex align-items-center">
-                        {% if request.GET.book_id %}
-                        <input type="hidden" name="book_id" value="{{ request.GET.book_id }}">
-                        {% endif %}
-                        <label class="me-2 mb-0"><strong>Trier par:</strong></label>
-                        <select name="order" onchange="this.form.submit()" class="form-select w-auto">
-                            <option value="-date" {% if request.GET.order == '-date' or not request.GET.order %}selected{% endif %}>Date (récent)</option>
-                            <option value="date" {% if request.GET.order == 'date' %}selected{% endif %}>Date (ancien)</option>
-                            <option value="-note" {% if request.GET.order == '-note' %}selected{% endif %}>Note (haute)</option>
-                            <option value="note" {% if request.GET.order == 'note' %}selected{% endif %}>Note (basse)</option>
-                        </select>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Liste des avis -->
-            {% if avis_list %}
-                {% for avis in avis_list %}
-                <div class="card mb-3 shadow-sm">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-9">
-                                <!-- Titre et auteur du livre -->
-                                <h5 class="card-title mb-2">
-                                    <strong>Titre :</strong> {{ avis.book_title }}
-                                </h5>
-                                <p class="text-muted mb-2">
-                                    <strong>Auteur :</strong> {{ avis.author }}
-                                </p>
-                                
-                                <!-- Note avec étoiles -->
-                                <div class="mb-2">
-                                    <strong>Note :</strong>
-                                    <span class="text-warning">
-                                        {% for i in "12345" %}
-                                            {% if forloop.counter <= avis.note %}
-                                                ⭐
-                                            {% else %}
-                                                ☆
-                                            {% endif %}
-                                        {% endfor %}
-                                    </span>
-                                    <span class="badge bg-primary">{{ avis.note }}/5</span>
-                                </div>
-
-                                <!-- Commentaire -->
-                                <div class="mb-2">
-                                    <strong>Commentaire :</strong>
-                                    <p class="text-secondary mb-0">
-                                        {{ avis.commentaire|truncatewords:30 }}
-                                    </p>
-                                </div>
-
-                                <!-- Date -->
-                                <small class="text-muted">
-                                    <i class="far fa-calendar"></i> Publié le {{ avis.date|date:"d/m/Y" }}
-                                </small>
-                            </div>
-
-                            <!-- Boutons d'action -->
-                            <div class="col-md-3 text-end d-flex flex-column justify-content-center">
-                                <a href="{% url 'detail_avis' avis.pk %}" class="btn btn-info btn-sm mb-2">
-                                    <i class="fas fa-eye"></i> Voir détails
-                                </a>
-                                <a href="{% url 'modifier_avis' avis.pk %}" class="btn btn-warning btn-sm mb-2">
-                                    <i class="fas fa-edit"></i> Modifier
-                                </a>
-                                <a href="{% url 'supprimer_avis' avis.pk %}" class="btn btn-danger btn-sm">
-                                    <i class="fas fa-trash"></i> Supprimer
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            {% else %}
-                <div class="alert alert-info text-center" role="alert">
-                    <h4 class="alert-heading">Aucun avis</h4>
-                    <p>Il n'y a pas encore d'avis pour ce livre. Soyez le premier à donner votre opinion !</p>
-                    {% if livre %}
-                    <a href="{% url 'ajouter_avis' livre.pk %}" class="btn btn-success">Ajouter le premier avis</a>
-                    {% endif %}
-                </div>
-            {% endif %}
-
-            <!-- Pagination -->
-            {% if is_paginated %}
-            <nav aria-label="Page navigation" class="mt-4">
-                <ul class="pagination justify-content-center">
-                    {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}{% if request.GET.book_id %}&book_id={{ request.GET.book_id }}{% endif %}">
-                            Précédent
-                        </a>
-                    </li>
-                    {% endif %}
-
-                    <li class="page-item disabled">
-                        <span class="page-link">Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
-                    </li>
-
-                    {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}{% if request.GET.book_id %}&book_id={{ request.GET.book_id }}{% endif %}">
-                            Suivant
-                        </a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </nav>
-            {% endif %}
+    <!-- Back to Home Button -->
+    <div class="card mb-4 shadow-sm border-0" style="background:#F5F2ED;">
+        <div class="card-body">
+            <a href="{% url 'index' %}" class="btn text-white" style="background:#A1785C;">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
         </div>
     </div>
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold">
+            {% if livre %}
+                Reviews for "{{ livre.title }}"
+            {% else %}
+                All Reviews
+            {% endif %}
+        </h1>
+    </div>
+
+    <!-- Sorting Card -->
+    <div class="card shadow-sm mb-4 border-0" style="background:#F5F2ED;">
+        <div class="card-body">
+            <form method="get" class="d-flex align-items-center">
+                {% if request.GET.book_id %}
+                <input type="hidden" name="book_id" value="{{ request.GET.book_id }}">
+                {% endif %}
+
+                <label class="me-2 mb-0 fw-semibold text-dark">Sort by:</label>
+                <select name="order" onchange="this.form.submit()" 
+                        class="form-select w-auto border-0 shadow-sm" 
+                        style="background:#E8DFD3;">
+                    <option value="-date" {% if request.GET.order == '-date' or not request.GET.order %}selected{% endif %}>
+                        Date (newest)
+                    </option>
+                    <option value="date" {% if request.GET.order == 'date' %}selected{% endif %}>
+                        Date (oldest)
+                    </option>
+                    <option value="-note" {% if request.GET.order == '-note' %}selected{% endif %}>
+                        Rating (highest)
+                    </option>
+                    <option value="note" {% if request.GET.order == 'note' %}selected{% endif %}>
+                        Rating (lowest)
+                    </option>
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reviews List -->
+    {% if avis_list %}
+        {% for avis in avis_list %}
+        <div class="card mb-3 shadow-sm border-0" style="background:#FFFDF9;">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-9">
+                        <h5 class="fw-bold text-dark mb-1" style="font-size: 1.25rem;">{{ avis.book_title }}</h5>
+                        <p class="text-muted mb-2">by {{ avis.author }}</p>
+
+                        <!-- Rating -->
+                        <div class="mb-2">
+                            <strong>Rating:</strong>
+                            <span class="text-warning">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= avis.note %}
+                                        ⭐
+                                    {% else %}
+                                        ☆
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                            <span class="badge rounded-pill">{{ avis.note }}/5</span>
+                        </div>
+
+                        <!-- Comment -->
+                        <div class="mb-2">
+                            <strong>Comment:</strong>
+                            <p class="text-secondary mb-0">{{ avis.commentaire|truncatewords:30 }}</p>
+                        </div>
+
+                        <!-- Date -->
+                        <small class="text-muted"><i class="far fa-calendar"></i> Published on {{ avis.date|date:"d/m/Y" }}</small>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="col-md-3 text-end d-flex flex-column justify-content-center">
+                        <a href="{% url 'detail_avis' avis.pk %}" class="btn btn-sm text-white mb-2" style="background:#A1785C;">
+                            <i class="fas fa-eye"></i> View Details
+                        </a>
+                        <a href="{% url 'modifier_avis' avis.pk %}" class="btn btn-sm text-white mb-2" style="background:#C49A6C;">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="{% url 'supprimer_avis' avis.pk %}" class="btn btn-sm text-white" style="background:#8C4F4F;">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    {% else %}
+        <!-- Empty State -->
+        <div class="alert text-center p-4 shadow-sm" style="background:#FFF7EF; border-left:5px solid #C49A6C;">
+            <h4 class="fw-bold">No reviews yet</h4>
+            <p class="text-muted">Be the first to write a review!</p>
+            {% if livre %}
+            <a href="{% url 'ajouter_avis' livre.pk %}" class="btn text-white" style="background:#A1785C;">
+                Add a review
+            </a>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link border-0" style="background:#E8DFD3;" 
+                   href="?page={{ page_obj.previous_page_number }}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}{% if request.GET.book_id %}&book_id={{ request.GET.book_id }}{% endif %}">
+                    Previous
+                </a>
+            </li>
+            {% endif %}
+
+            <li class="page-item disabled">
+                <span class="page-link border-0" style="background:#F5F2ED;">
+                    Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link border-0" style="background:#E8DFD3;" 
+                   href="?page={{ page_obj.next_page_number }}{% if request.GET.order %}&order={{ request.GET.order }}{% endif %}{% if request.GET.book_id %}&book_id={{ request.GET.book_id }}{% endif %}">
+                    Next
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
 </div>
+
 {% endblock %}
