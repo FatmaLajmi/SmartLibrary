@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Créer mon profil - SmartLibrary{% endblock %}
+{% block title %}Create Profile - SmartLibrary{% endblock %}
 
 {% block content %}
 
@@ -85,11 +85,11 @@
 
 <div class="profile-container">
 
-    <h2>Créer votre profil</h2>
+    <h2>Create Your Profile</h2>
 
     {% if form.errors %}
         <div class="alert">
-            Certains champs sont incorrects.
+            Some fields are incorrect.
         </div>
     {% endif %}
 
@@ -100,7 +100,7 @@
         <p>
             <label for="{{ field.id_for_label }}">
                 {% if field.name == 'image_upload' %}
-                    Photo de profil
+                    Profile Photo
                 {% else %}
                     {{ field.label }}
                 {% endif %}
@@ -112,7 +112,7 @@
         </p>
     {% endfor %}
 
-    <button type="submit">Créer le profil</button>
+    <button type="submit">Create Profile</button>
 </form>
 
 </div>

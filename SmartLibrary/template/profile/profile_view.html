@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Mon profil - SmartLibrary{% endblock %}
+{% block title %}My Profile - SmartLibrary{% endblock %}
 
 {% block content %}
 
@@ -81,10 +81,10 @@
 <div class="view-container">
 
     <div class="header">
-        <h2>Mon profil</h2>
+        <h2>My Profile</h2>
         <div>
-            <a href="{% url 'profile_edit' %}" class="btn">Modifier</a>
-            <a href="{% url 'index' %}" class="btn" style="background:#757575;">home</a>
+            <a href="{% url 'profile_edit' %}" class="btn">Edit</a>
+            <a href="{% url 'index' %}" class="btn" style="background:#757575;">Home</a>
         </div>
     </div>
 
@@ -97,7 +97,7 @@
     </div>
 
     <div class="info-block">
-        <div class="info-label">Nom complet</div>
+        <div class="info-label">Full Name</div>
         <div class="info-value">{{ profile.user.first_name }} {{ profile.user.last_name }}</div>
     </div>
 
@@ -107,17 +107,17 @@
     </div>
 
     <div class="info-block">
-        <div class="info-label">Adresse</div>
-        <div class="info-value">{{ profile.address|default:"Non renseignée" }}</div>
+        <div class="info-label">Address</div>
+        <div class="info-value">{{ profile.address|default:"Not provided" }}</div>
     </div>
 
     <div class="info-block">
-        <div class="info-label">Téléphone</div>
-        <div class="info-value">{{ profile.phone_number|default:"Non renseigné" }}</div>
+        <div class="info-label">Phone</div>
+        <div class="info-value">{{ profile.phone_number|default:"Not provided" }}</div>
     </div>
 
     <div class="info-block">
-        <div class="info-label">Carte bancaire</div>
+        <div class="info-label">Bank Card</div>
         <div class="info-value">**** **** **** {{ profile.bank_card_number|slice:"-4:" }}</div>
     </div>
 </div>

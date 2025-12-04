@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Modifier le profil - SmartLibrary{% endblock %}
+{% block title %}Edit Profile - SmartLibrary{% endblock %}
 
 {% block content %}
 
@@ -90,11 +90,11 @@
 
 <div class="profile-container">
 
-    <h2>Modifier le profil</h2>
+    <h2>Edit Profile</h2>
 
     {% if user_form.errors or profile_form.errors %}
     <div class="alert">
-        Veuillez corriger les champs incorrects.
+        Please correct the incorrect fields.
     </div>
     {% endif %}
 
@@ -102,18 +102,18 @@
         {% csrf_token %}
 
         <div class="section-block">
-            <div class="section-title">Informations utilisateur</div>
+            <div class="section-title">User Information</div>
             {{ user_form.as_p }}
         </div>
 
         <div class="section-block">
-            <div class="section-title">Informations du profil</div>
+            <div class="section-title">Profile Information</div>
             {{ profile_form.as_p }}
         </div>
 
-        <button class="btn-save">Enregistrer les modifications</button>
+        <button class="btn-save">Save Changes</button>
         <a href="{% url 'profile_view' %}">
-            <button type="button" class="btn-cancel">Annuler</button>
+            <button type="button" class="btn-cancel">Cancel</button>
         </a>
     </form>
 </div>

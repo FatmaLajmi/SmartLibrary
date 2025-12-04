@@ -8,12 +8,20 @@ class PanierListView(ListView):
     context_object_name = 'panier_list'
 
     def get_queryset(self):
-        return Panier.objects.filter(user=self.request.user)
+        qs = Panier.objects.filter(user=self.request.user)
+        # Tri selon paramètre GET "sort": price_asc ou price_desc
+        sort = self.request.GET.get('sort', '')
+        if sort == 'price_asc':
+            qs = qs.order_by('prix')
+        elif sort == 'price_desc':
+            qs = qs.order_by('-prix')
+        return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        items = Panier.objects.filter(user=self.request.user)
+        items = self.get_queryset()
         context['total'] = sum(item.prix_total for item in items)
+        context['current_sort'] = self.request.GET.get('sort', '')
         return context
     
 

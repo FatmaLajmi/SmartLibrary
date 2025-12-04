@@ -10,6 +10,23 @@
         {% if panier_list %}
         
         <div class="container" style="max-width:900px; margin:0 auto;">
+
+            <!-- Modern sorting control -->
+            <div class="d-flex justify-content-end mb-3 align-items-center">
+                <label class="me-2 mb-0 fw-semibold">Sort by price</label>
+
+                <form id="sortForm" method="get" class="d-flex align-items-center">
+                    <select name="sort"
+                            class="form-select form-select-sm me-2"
+                            style="min-width:170px;"
+                            onchange="document.getElementById('sortForm').submit()">
+                        <option value="" {% if not current_sort %}selected{% endif %}>Default</option>
+                        <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Low to High ↑</option>
+                        <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>High to Low ↓</option>
+                    </select>
+                </form>
+            </div>
+
             <table class="table table-bordered centered-table align-middle text-center">
                 <thead class="table-light">
                     <tr>
