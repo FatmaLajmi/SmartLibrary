@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'UserApp',       
     'ProfileApp',
     'StockApp',
+    'ChatApp',
+    'ChatAppApi',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
