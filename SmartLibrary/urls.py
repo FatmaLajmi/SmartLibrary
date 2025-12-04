@@ -7,8 +7,9 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
-    path('', include('LivreApp.urls')), 
+    path('library/', include('LivreApp.urls')),  # correction : éviter conflit avec ''
     path('api/', include('LivreAppApi.urls')),
+    path('books/', views.all_books, name='all_books'),
     path('avis/', include('AvisApp.urls')),
     path('api/avis/', include('AvisAppApi.urls')),
     path('Panier/', include('PanierApp.urls')),
