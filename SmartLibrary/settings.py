@@ -167,8 +167,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = f'SmartLibrary <{config("EMAIL_HOST_USER")}>'
-SERVER_EMAIL = config('EMAIL_HOST_USER')
+DEFAULT_FROM_EMAIL = 'SmartLibrary <noreply@smartlibrary.com>'
+SERVER_EMAIL = 'SmartLibrary <noreply@smartlibrary.com>'
 
 # Password reset timeout (1 jour = 86400 secondes)
 PASSWORD_RESET_TIMEOUT = 86400
