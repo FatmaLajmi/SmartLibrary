@@ -351,12 +351,12 @@
                                     {% endif %}
 
                                     <!-- ⭐ Note moyenne -->
-                                    <div class="mt-1">
-                                        <small>
-                                            ⭐ {{ book.average_rating|floatformat:1 }}/5
-                                            ({{ book.reviews_count }} review{{ book.reviews_count|pluralize }})
-                                        </small>
-                                    </div>
+									<div class="mt-1">
+    										<small>
+											⭐ {{ book.annotated_average_rating|default:book.average_rating|floatformat:1 }}/5
+											({{ book.annotated_reviews_count }} review{{ book.annotated_reviews_count|pluralize }})
+										</small>
+									</div>
 
                                     <!-- Actions avis -->
                                     <div class="book-actions mt-2">
