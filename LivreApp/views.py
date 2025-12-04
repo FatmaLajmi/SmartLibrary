@@ -2,9 +2,47 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 from .models import Livre
 from django.db.models import Count
+from AvisApp.utils import get_recommended_books_for_user
 
 def index(request):
-    """Homepage view with featured books and books by genre"""
+    """Homepage view with featured books, books by genre, and recommended books"""
+
+    # Featured
+    featured_books = (
+        Livre.objects.filter(available=True)
+        .order_by('-date_added')[:10]
+    )
+
+    # Popular by genre
+    display_genres = ['fiction', 'mystery', 'romance', 'science_fiction', 'fantasy']
+
+    books_by_genre = {}
+    for genre in display_genres:
+        genre_books = (
+            Livre.objects.filter(
+                genre=genre,
+                available=True
+            )
+            .order_by('-date_added')[:8]
+        )
+
+        if genre_books.exists():
+            books_by_genre[genre] = {
+                'name': dict(Livre.GENRE_CHOICES).get(genre, genre.title()),
+                'books': genre_books,
+            }
+
+    # Recommended
+    recommended_books = get_recommended_books_for_user(request.user, limit=8)
+
+    context = {
+        'featured_books': featured_books,
+        'books_by_genre': books_by_genre,
+        'recommended_books': recommended_books,
+    }
+    return render(request, 'index.html', context)
+""" def index(request):
+    
     
     # Get 10 most recent books for featured section
     featured_books = Livre.objects.filter(available=True).order_by('-date_added')[:10]
@@ -31,7 +69,7 @@ def index(request):
         'books_by_genre': books_by_genre,
     }
     
-    return render(request, 'index.html', context)
+    return render(request, 'index.html', context) """
 
 
 def all_books(request):
