@@ -175,9 +175,7 @@
                             <img src="data:image/jpeg;base64,{{ book.image_blob|b64encode }}" 
                                  alt="{{ book.title }}" 
                                  class="banner-image"
-								 width="286"
-								 height="414"
-                                 style="object-fit: contain;">
+                                 style="object-fit: cover;">
                         {% else %}
                             <img src="{% static 'images/main-banner1.jpg' %}" 
                                  alt="{{ book.title }}" 
