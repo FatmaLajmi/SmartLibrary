@@ -8,7 +8,6 @@ class Stock(models.Model):
     STATUS_CHOICES = [
         ('available', 'Available'),
         ('out_of_stock', 'Out of Stock'),
-        ('on_order', 'On Order'),
         ('low', 'Low Stock'),
     ]
     

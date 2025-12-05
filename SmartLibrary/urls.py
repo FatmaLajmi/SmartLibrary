@@ -16,6 +16,7 @@ urlpatterns = [
     path('profile/', include('ProfileApp.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('user/', include('UserApp.urls')),
+    path('stock/', include('StockApp.urls')),
 ]
 
 if settings.DEBUG:

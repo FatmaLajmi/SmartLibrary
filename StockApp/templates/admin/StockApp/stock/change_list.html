@@ -1,0 +1,56 @@
+{% extends "admin/change_list.html" %}
+{% load static %}
+
+{% block search %}
+    <p style="margin-bottom: 0.5em; font-style: italic; color: #bbb;">
+        You can search by ISBN, book title, author, or genre.
+    </p>
+    {{ block.super }}
+    <li>
+        <a class="addlink" href="{% url 'StockApp:stock_stats' %}">📊 View Stock Stats</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+  <div style="margin-bottom:1rem; display:flex; gap:8px; align-items:center;">
+    <a id="exportAllExcel" class="button" href="export/all-excel/">Export ALL → Excel</a>
+    <a id="exportAllPDF" class="button" href="export/all-pdf/">Export ALL → PDF</a>
+    <div style="flex:1"></div>
+  </div>
+
+  {{ block.super }}
+{% endblock %}
+
+{% block extra_scripts %}
+  {{ block.super }}
+  <script>
+    (function() {
+      function submitAdminAction(actionName) {
+        const form = document.getElementById('changelist-form') || document.querySelector('form[action][method="post"]');
+        if (!form) { alert('Admin changelist form not found.'); return; }
+        const actionSelect = form.querySelector('select[name="action"]');
+        if (!actionSelect) { alert('Action select not found in changelist form.'); return; }
+        actionSelect.value = actionName;
+        form.submit();
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        const selXls = document.getElementById('exportSelectedExcel');
+        const selPdf = document.getElementById('exportSelectedPDF');
+
+        if (selXls) {
+          selXls.addEventListener('click', function(e) {
+            e.preventDefault();
+            submitAdminAction('export_as_excel');
+          });
+        }
+        if (selPdf) {
+          selPdf.addEventListener('click', function(e) {
+            e.preventDefault();
+            submitAdminAction('export_as_pdf');
+          });
+        }
+      });
+    })();
+  </script>
+{% endblock %}
