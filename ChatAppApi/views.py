@@ -8,36 +8,53 @@ from django.db.models import Q
 from LivreApp.models import Livre
 from AvisApp.utils import get_recommended_books_for_user
 
-from google import genai
+from django.conf import settings
+import importlib
+
+# Respect the global setting `GEMINI_ENABLED` (default: False).
+# When disabled, `call_gemini` returns a harmless fallback message and
+# the Gemini SDK is not imported to avoid ImportError at import time.
+GEMINI_ENABLED = getattr(settings, 'GEMINI_ENABLED', False)
 
 
-# Create Gemini client using API key from environment variable
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-
-if not GEMINI_API_KEY:
-    # Optionnel : tu peux juste logguer ça en prod
-    raise RuntimeError(
-        "GEMINI_API_KEY environment variable is not set. "
-        "Please set it before running the server."
-    )
-
-client = genai.Client(api_key=GEMINI_API_KEY)
-
-
-def call_gemini(prompt: str) -> str:
-    """
-    Call Gemini 2.5 Flash with a text prompt and return the response text.
-    """
+if GEMINI_ENABLED:
+    # Lazily import the Gemini SDK so the app can run when the SDK isn't installed
     try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt,
+        genai = importlib.import_module('google.genai')
+    except Exception:
+        raise RuntimeError(
+            "Gemini SDK is required but not installed. "
+            "Install the package that provides `google.genai` or set GEMINI_ENABLED=false."
         )
-        # response.text contient le texte concaténé de la réponse
-        return (response.text or "").strip()
-    except Exception as e:
-        # En prod : logger l'erreur
-        return f"Sorry, I had an issue contacting the AI service: {e}"
+
+    # Create Gemini client using API key from environment variable
+    GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+
+    if not GEMINI_API_KEY:
+        raise RuntimeError(
+            "GEMINI_API_KEY environment variable is not set but GEMINI_ENABLED=True."
+        )
+
+    client = genai.Client(api_key=GEMINI_API_KEY)
+
+
+    def call_gemini(prompt: str) -> str:
+        """
+        Call Gemini 2.5 Flash with a text prompt and return the response text.
+        """
+        try:
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt,
+            )
+            return (response.text or "").strip()
+        except Exception as e:
+            return f"Sorry, I had an issue contacting the AI service: {e}"
+
+else:
+    def call_gemini(prompt: str) -> str:
+        # Gemini integration disabled: return helpful fallback
+        return "AI features are temporarily disabled by the server administrator."
 
 
 @csrf_exempt

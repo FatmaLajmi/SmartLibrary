@@ -159,18 +159,25 @@ LOGOUT_REDIRECT_URL = 'index'  # page after logout
 # ----------------------------
 #   EMAIL CONFIGURATION
 # ----------------------------
-# Backend pour le développement (affiche les emails en console)
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Toggle email integration (default: disabled)
+# Set the environment variable or .env value `EMAIL_ENABLED=true` to enable SMTP.
+EMAIL_ENABLED = config('EMAIL_ENABLED', default=False, cast=bool)
 
-# Configuration pour Gmail (production)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = 'SmartLibrary <noreply@smartlibrary.com>'
-SERVER_EMAIL = 'SmartLibrary <noreply@smartlibrary.com>'
+if EMAIL_ENABLED:
+    # Configuration pour Gmail (production)
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+    DEFAULT_FROM_EMAIL = 'SmartLibrary <noreply@smartlibrary.com>'
+    SERVER_EMAIL = 'SmartLibrary <noreply@smartlibrary.com>'
+else:
+    # Backend pour le développement (affiche les emails en console)
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    DEFAULT_FROM_EMAIL = 'SmartLibrary <noreply@smartlibrary.com>'
+    SERVER_EMAIL = 'SmartLibrary <noreply@smartlibrary.com>'
 
 # Password reset timeout (1 jour = 86400 secondes)
 PASSWORD_RESET_TIMEOUT = 86400
@@ -184,3 +191,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
     
+# Toggle Gemini AI integration (default: disabled)
+# Set the environment variable or .env value `GEMINI_ENABLED=true` to enable.
+GEMINI_ENABLED = config('GEMINI_ENABLED', default=False, cast=bool)
+
+

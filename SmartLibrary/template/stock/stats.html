@@ -1,0 +1,224 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Stock Stats</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root{
+      --admin-bg: #0f0f10;
+      --panel-bg: #141418;
+      --muted: #bdbdbd;
+      --text: #ffffff;
+      --accent: #36a2eb;
+      --accent-2: #ff9f40;
+      --accent-3: #4bc0c0;
+    }
+    html, body { height:100%; margin:0; padding:0; background:var(--admin-bg); color:var(--text); font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+    .wrap { padding:18px; max-width:1200px; margin:0 auto; box-sizing:border-box; }
+
+    h1 { font-size:20px; margin:0 0 12px 0; text-align:center; color:var(--text); }
+
+    .summary {
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      margin-bottom:16px;
+      flex-wrap:wrap;
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:8px;
+      padding:12px 16px;
+      min-width:160px;
+      box-sizing:border-box;
+      text-align:center;
+    }
+    .card .label { color:var(--muted); font-size:12px; }
+    .card .value { font-size:20px; margin-top:6px; color:var(--text); font-weight:600; }
+
+    .controls { display:flex; justify-content:flex-end; gap:8px; margin-bottom:8px; align-items:center; }
+    .chart-row { display:grid; grid-template-columns: 2fr 1fr; gap:12px; align-items:start; }
+    .chart-container { background:var(--panel-bg); padding:12px; border-radius:8px; min-height:260px; }
+    canvas { width:100% !important; height:320px; }
+
+    .muted { color:var(--muted); text-align:center; margin-top:6px; font-size:13px; }
+
+    @media (max-width:900px) {
+      .chart-row { grid-template-columns: 1fr; }
+      canvas { height:260px; }
+    }
+
+    .top-n-select { background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--text); padding:6px 8px; border-radius:4px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Stock Statistics</h1>
+
+    <div class="summary" id="summary">
+      <div class="card">
+        <div class="label">Total titles</div>
+        <div class="value" id="total_titles">—</div>
+      </div>
+      <div class="card">
+        <div class="label">Total quantity</div>
+        <div class="value" id="total_qty">—</div>
+      </div>
+      <div class="card">
+        <div class="label">Low stock</div>
+        <div class="value" id="low_stock">—</div>
+      </div>
+      <div class="card">
+        <div class="label">Out of stock</div>
+        <div class="value" id="out_stock">—</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <label for="topN" style="color:var(--muted); margin-right:8px;">Show top</label>
+      <select id="topN" class="top-n-select">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="20">20</option>
+        <option value="0">All</option>
+      </select>
+    </div>
+
+    <div class="chart-row">
+      <div class="chart-container">
+        <canvas id="barChart"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="pieChart"></canvas>
+      </div>
+    </div>
+
+    <p class="muted">Data is updated from the stock database.</p>
+  </div>
+
+  <script>
+    // fetches enriched JSON from the server and draws two charts
+    async function fetchStats() {
+      const resp = await fetch("{% url 'StockApp:stock_stats_data' %}", { credentials: 'same-origin' });
+      if (!resp.ok) throw new Error('Failed to load stats');
+      return resp.json();
+    }
+
+    function makeColors(n) {
+      const base = [
+        'rgba(54,162,235,0.9)',
+        'rgba(255,159,64,0.9)',
+        'rgba(75,192,192,0.9)',
+        'rgba(153,102,255,0.9)',
+        'rgba(255,99,132,0.9)',
+        'rgba(255,205,86,0.9)',
+        'rgba(201,203,207,0.9)'
+      ];
+      const out = [];
+      for (let i=0;i<n;i++) out.push(base[i % base.length]);
+      return out;
+    }
+
+    async function drawAll() {
+      try {
+        const data = await fetchStats();
+        // data expected: { labels: [], data: [], title: '', totals: {total_books, total_quantity, total_low_stock, total_out_of_stock} }
+        const labels = data.labels || [];
+        const series = data.data || [];
+        const totals = data.totals || {};
+        document.getElementById('total_titles').textContent = totals.total_books ?? '-';
+        document.getElementById('total_qty').textContent = totals.total_quantity ?? '-';
+        document.getElementById('low_stock').textContent = totals.total_low_stock ?? '-';
+        document.getElementById('out_stock').textContent = totals.total_out_of_stock ?? '-';
+
+        // Top N selector
+        const topN = parseInt(document.getElementById('topN').value, 10);
+
+        // pair and sort by value desc
+        const pairs = labels.map((l,i) => ({label:l, value: series[i] || 0}));
+        pairs.sort((a,b) => b.value - a.value);
+
+        let used = pairs;
+        if (topN > 0) used = pairs.slice(0, topN);
+
+        const usedLabels = used.map(p => p.label);
+        const usedValues = used.map(p => p.value);
+        const colors = makeColors(usedLabels.length);
+
+        // Bar chart
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        if (window._barChart) try { window._barChart.destroy(); } catch(e){}
+        window._barChart = new Chart(barCtx, {
+          type: 'bar',
+          data: {
+            labels: usedLabels,
+            datasets: [{
+              label: data.title || 'Quantity',
+              data: usedValues,
+              backgroundColor: colors,
+              borderColor: colors.map(c => c.replace('0.9','1')),
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive:true,
+            maintainAspectRatio:false,
+            plugins: { legend:{ display:false, labels:{ color:'#fff' } } },
+            scales: {
+              x: { ticks:{ color:'#e6e6e6' }, grid:{ color:'rgba(255,255,255,0.03)' } },
+              y: { beginAtZero:true, ticks:{ color:'#e6e6e6', precision:0 }, grid:{ color:'rgba(255,255,255,0.03)' } }
+            }
+          }
+        });
+
+        // Pie chart
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        if (window._pieChart) try { window._pieChart.destroy(); } catch(e){}
+        window._pieChart = new Chart(pieCtx, {
+          type: 'pie',
+          data: {
+            labels: usedLabels,
+            datasets: [{
+              data: usedValues,
+              backgroundColor: colors,
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive:true,
+            maintainAspectRatio:false,
+            plugins: {
+              legend:{ position:'right', labels:{ color:'#fff' } },
+              tooltip:{ callbacks: {
+                label: function(context) {
+                  const v = context.raw;
+                  const total = context.dataset.data.reduce((a,b)=>a+b,0) || 1;
+                  const pct = ((v/total)*100).toFixed(1);
+                  return context.label + ': ' + v + ' (' + pct + '%)';
+                }
+              } }
+            }
+          }
+        });
+
+        // if inside iframe, notify parent for resize (same-origin)
+        try {
+          const h = document.documentElement.scrollHeight;
+          window.parent.postMessage({ type:'stats-height', height: h }, window.location.origin);
+        } catch (e) {}
+
+      } catch (err) {
+        console.error('Failed to draw stats', err);
+        document.querySelector('.wrap').insertAdjacentHTML('beforeend','<p style="color:#f88">Failed to load stats</p>');
+      }
+    }
+
+    document.getElementById('topN').addEventListener('change', drawAll);
+    drawAll();
+    window.addEventListener('resize', () => setTimeout(drawAll, 150));
+  </script>
+</body>
+</html>
