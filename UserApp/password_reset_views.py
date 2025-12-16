@@ -26,7 +26,7 @@ class CustomPasswordResetView(PasswordResetView):
         logger.info(f"Password reset requested for email: {email}")
         messages.success(
             self.request, 
-            "Si cette adresse email existe dans notre système, vous recevrez un email de réinitialisation."
+            "If this email address exists in our system, you will receive a password reset email."
         )
         return super().form_valid(form)
     
@@ -56,11 +56,11 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
         """Validate new password and log successful reset"""
         user = form.save()
         logger.info(f"Password successfully reset for user: {user.email}")
-        messages.success(self.request, "Votre mot de passe a été réinitialisé avec succès !")
+        messages.success(self.request, "Your password has been reset successfully!")
         return super().form_valid(form)
     
     def form_invalid(self, form):
         """Log validation errors"""
         logger.warning(f"Password reset validation failed for token")
-        messages.error(self.request, "Le mot de passe ne respecte pas les critères de sécurité.")
+        messages.error(self.request, "The password does not meet the security requirements.")
         return super().form_invalid(form)

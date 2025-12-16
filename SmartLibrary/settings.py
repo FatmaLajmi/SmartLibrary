@@ -195,4 +195,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Set the environment variable or .env value `GEMINI_ENABLED=true` to enable.
 GEMINI_ENABLED = config('GEMINI_ENABLED', default=False, cast=bool)
 
+if GEMINI_ENABLED:
+    GEMINI_API_KEY = config('GEMINI_API_KEY')
+else:
+    GEMINI_API_KEY = None
+
 
