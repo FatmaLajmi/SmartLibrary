@@ -1,14 +1,10 @@
 from django.shortcuts import render
 from LivreApp.models import Livre
-<<<<<<< HEAD
-from AvisApp.utils import get_recommended_books_for_user  
-=======
-from django.db.models import Q
+from AvisApp.utils import get_recommended_books_for_user
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 
-
->>>>>>> main
 def index(request):
     """Homepage view with featured books and books by genre"""
     
@@ -41,7 +37,7 @@ def index(request):
     context = {
         'featured_books': featured_books,
         'books_by_genre': books_by_genre,
-        'recommended_books': recommended_books,   # 🔴 AJOUT
+        'recommended_books': recommended_books,   #  AJOUT
     }
     return render(request, 'index.html', context)
 
