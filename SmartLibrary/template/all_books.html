@@ -20,6 +20,84 @@
     <link rel="stylesheet" type="text/css" href="{% static 'icomoon/icomoon.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/vendor.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <style>
+    /* Hero header style */
+    .page-hero {
+        background: linear-gradient(180deg, #f5eee3 0%, #ffffff 100%);
+        padding: 60px 0 30px;
+        text-align: center;
+        margin-bottom: 0;
+    }
+    .page-hero h1 {
+        font-size: 48px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    /* Search + Filter bar */
+    #filters-bar {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+        margin-top: -30px; /* pull up over the hero section */
+        position: relative;
+        z-index: 10;
+    }
+    #filters-bar input,
+    #filters-bar select {
+        border-radius: 10px;
+        padding: 10px 14px;
+        border: 1px solid #ddd;
+    }
+    #filters-bar button,
+    #filters-bar a.btn {
+        border-radius: 10px;
+        padding: 10px 15px;
+        font-weight: 600;
+    }
+
+    /* Book card improvements */
+    .product-item {
+        border-radius: 12px !important;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.1) !important;
+        transition: 0.3s ease;
+        padding-bottom: 15px;
+    }
+    .product-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 25px rgba(0,0,0,0.15) !important;
+    }
+    .product-item img {
+        border-bottom: 1px solid #eee;
+    }
+    .product-item h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-top: 12px;
+        min-height: 48px;
+        color: #333;
+    }
+    .item-price {
+        font-size: 18px;
+        color: #8c6b4f;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+    .product-item figure {
+        margin: 0;
+    }
+
+    /* Pagination */
+    .pagination .page-link {
+        border-radius: 8px !important;
+        margin: 0 4px;
+        padding: 8px 14px;
+    }
+</style>
+
 </head>
 
 <body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
@@ -115,46 +193,55 @@
     </div><!-- header-wrap -->
 
     <!-- Page Header -->
-    <section class="py-5" style="background: linear-gradient(to bottom, #f9f3e9 0%, #ffffff 100%);">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="section-header align-center">
-                        <h1 class="section-title">
-                            {% if selected_genre %}
-                                {{ selected_genre }} Books
-                            {% else %}
-                                All Books
-                            {% endif %}
-                        </h1>
-                        <p class="text-muted">Showing {{ total_books }} book{{ total_books|pluralize }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <section class="page-hero">
+    <div class="container">
+        <h1>
+            {% if selected_genre %}
+                {{ selected_genre }} Books
+            {% else %}
+                All Books
+            {% endif %}
+        </h1>
+        <p class="text-muted">
+            Showing {{ total_books }} book{{ total_books|pluralize }}
+        </p>
+    </div>
+</section>
 
-    <!-- Genre Filter Section -->
-    <section class="py-3 border-bottom">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="d-flex flex-wrap gap-2 justify-content-center align-items-center">
-                        <span class="fw-bold me-2">Filter by Genre:</span>
-                        <a href="{% url 'all_books' %}" class="btn btn-sm {% if not genre_filter %}btn-primary{% else %}btn-outline-secondary{% endif %}">
-                            All Books
-                        </a>
-                        {% for genre_key, genre_name in genre_list %}
-                        <a href="{% url 'all_books' %}?genre={{ genre_key }}" 
-                           class="btn btn-sm {% if genre_filter == genre_key %}btn-primary{% else %}btn-outline-secondary{% endif %}">
-                            {{ genre_name }}
-                        </a>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
+
+    <!-- Filter + Search Bar -->
+<section id="filters-bar" class="container">
+    <form method="GET" class="row g-3 align-items-center">
+
+        <div class="col-md-5">
+            <input type="text" name="search" class="form-control"
+                   placeholder="Search for a book or an author..."
+                   value="{{ request.GET.search }}">
         </div>
-    </section>
+
+        <div class="col-md-3">
+            <select name="genre" class="form-select">
+                <option value="">All Genres</option>
+                {% for key, name in genre_list %}
+                    <option value="{{ key }}" {% if genre_filter == key %}selected{% endif %}>
+                        {{ name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-dark w-100">Apply</button>
+        </div>
+
+        <div class="col-md-2">
+            <a href="{% url 'all_books' %}" class="btn btn-outline-secondary w-100">Reset</a>
+        </div>
+
+    </form>
+</section>
+
+
 
     <!-- All Books Grid Section -->
     <section id="all-books-section" class="py-5 my-5">

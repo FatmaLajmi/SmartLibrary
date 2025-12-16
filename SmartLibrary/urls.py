@@ -7,8 +7,9 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
-    path('', include('LivreApp.urls')), 
+    path('library/', include('LivreApp.urls')),  # correction : éviter conflit avec ''
     path('api/', include('LivreAppApi.urls')),
+    path('books/', views.all_books, name='all_books'),
     path('avis/', include('AvisApp.urls')),
     path('api/avis/', include('AvisAppApi.urls')),
     path('Panier/', include('PanierApp.urls')),
@@ -17,6 +18,8 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('user/', include('UserApp.urls')),
     path('stock/', include('StockApp.urls')),
+    path('chat/', include('ChatApp.urls')),
+    path('api/chat/', include('ChatAppApi.urls')),
 ]
 
 if settings.DEBUG:

@@ -1,6 +1,7 @@
 import base64
 from django.db import models
 from django.utils.html import format_html
+from django.db.models import Avg
 
 
 class Livre(models.Model):
@@ -70,7 +71,16 @@ class Livre(models.Model):
 
     def __str__(self):
         return f"{self.title} — {self.author}"
+    @property
+    def average_rating(self):
+        """Moyenne des notes basées sur Avis"""
+        result = self.avis.aggregate(avg=Avg('note'))
+        return result['avg'] or 0
 
+    @property
+    def reviews_count(self):
+        """Nombre total d'avis pour ce livre"""
+        return self.avis.count()
     class Meta:
         ordering = ['-date_added']
         verbose_name = "Book"
