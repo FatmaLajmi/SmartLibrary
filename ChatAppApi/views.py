@@ -27,12 +27,12 @@ if GEMINI_ENABLED:
             "Install the package that provides `google.genai` or set GEMINI_ENABLED=false."
         )
 
-    # Create Gemini client using API key from environment variable
-    GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+    # Create Gemini client using API key from Django settings
+    GEMINI_API_KEY = getattr(settings, 'GEMINI_API_KEY', None)
 
     if not GEMINI_API_KEY:
         raise RuntimeError(
-            "GEMINI_API_KEY environment variable is not set but GEMINI_ENABLED=True."
+            "GEMINI_API_KEY setting is not configured but GEMINI_ENABLED=True."
         )
 
     client = genai.Client(api_key=GEMINI_API_KEY)

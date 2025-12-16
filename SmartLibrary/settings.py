@@ -34,8 +34,8 @@ INSTALLED_APPS = [
     'UserApp',       
     'ProfileApp',
     'StockApp',
-    # 'ChatApp',
-    # 'ChatAppApi',
+    'ChatApp',
+    'ChatAppApi',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -194,5 +194,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Toggle Gemini AI integration (default: disabled)
 # Set the environment variable or .env value `GEMINI_ENABLED=true` to enable.
 GEMINI_ENABLED = config('GEMINI_ENABLED', default=False, cast=bool)
+
+if GEMINI_ENABLED:
+    GEMINI_API_KEY = config('GEMINI_API_KEY')
+else:
+    GEMINI_API_KEY = None
 
 
